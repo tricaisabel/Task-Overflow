@@ -1,0 +1,72 @@
+//TASKS
+//Post Method
+async function postRecord(req, res, Model) {
+    const data = new Model({
+        name: req.body.name,
+        duration: req.body.duration,
+        description:req.body.description
+    });
+    try{
+        await data.save();
+        res.status(200).json(data);
+    }
+    catch(error){
+        res.status(500).json({ message: error.message })
+    }
+}
+
+//Get all Method
+async function getRecords(req, res, Model){
+    try {
+        const data = await Model.find();
+        res.json(data)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+//Get by ID Method
+async function getRecord(req, res, Model){
+    try {
+        const data = await Model.findById(req.params.id);
+        res.json(data)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+//Update by ID Method
+async function updateRecord(req, res,Model){
+    try {
+        const id = req.params.id;
+        const updatedData = req.body;
+        const options = { new: true };
+        console.log(await req.body);
+        const result = await Model.findByIdAndUpdate(
+            id, updatedData, options
+        )
+
+        res.send(result)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+//Delete by ID Method
+async function deleteRecord(req, res,Model) {
+     try {
+        const id = req.params.id;
+        const data = await Model.findByIdAndDelete(id)
+        res.send(`Document with ${data.name} has been deleted..`)
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+}
+
+export{
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord
+}
