@@ -1,11 +1,12 @@
 //TASKS
 //Post Method
 async function postRecord(req, res, Model) {
-    const data = new Model({
-        name: req.body.name,
-        duration: req.body.duration,
-        description:req.body.description
-    });
+    let dataObj={};
+    for (var key in req.body){
+        var value = req.body[key];
+        dataObj[key]=value;
+    }
+    const data = new Model(dataObj);
     try{
         await data.save();
         res.status(200).json(data);
@@ -43,7 +44,6 @@ async function updateRecord(req, res,Model){
         const id = req.params.id;
         const updatedData = req.body;
         const options = { new: true };
-        console.log(await req.body);
         const result = await Model.findByIdAndUpdate(
             id, updatedData, options
         )
