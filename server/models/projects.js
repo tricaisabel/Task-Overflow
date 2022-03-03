@@ -9,6 +9,10 @@ const ProjectSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    password:{
+        type:String,
+        required:true
+    },
     deadline:{
         type:Date,
         required:true

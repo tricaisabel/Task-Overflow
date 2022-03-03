@@ -8,14 +8,14 @@ import ProjectModel from './models/projects.js';
 import MessageModel from './models/messages.js';
 
 import {
-    postRecord,getRecord,getRecords,updateRecord,deleteRecord
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord, existRecord
 } from './service.js'
 import TeamModel from './models/team.js';
 
 //Items
 router.route('/items')
         .get((req,res)=>getRecords(req,res,ItemModel))
-        .post((req,res)=>postRecord(req,res,ItemModel)) ;
+        .post((req,res)=>postRecord(req,res,ItemModel));
 
 router.route('/item/:id')
         .get((req,res)=>getRecord(req,res,ItemModel))    
@@ -35,7 +35,8 @@ router.route('/timing/:id')
 //Projects
 router.route('/projects')
         .get((req,res)=>getRecords(req,res,ProjectModel))
-        .post((req,res)=>postRecord(req,res,ProjectModel)) ;
+        .post((req,res)=>postRecord(req,res,ProjectModel))
+        .head((req,res)=>existRecord(req,res,UserModel));
 
 router.route('/project/:id')
         .get((req,res)=>getRecord(req,res,ProjectModel))    
@@ -45,7 +46,8 @@ router.route('/project/:id')
 //Users
 router.route('/users')
         .get((req,res)=>getRecords(req,res,UserModel))
-        .post((req,res)=>postRecord(req,res,UserModel)) ;
+        .post((req,res)=>postRecord(req,res,UserModel))
+        .head((req,res)=>existRecord(req,res,UserModel));
 
 router.route('/user/:id')
         .get((req,res)=>getRecord(req,res,UserModel))    

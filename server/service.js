@@ -67,6 +67,23 @@ async function deleteRecord(req, res,Model) {
     }
 }
 
+async function existRecord(req,res,Model){
+    try {
+        let dataObj={};
+        for (var key in req.body){
+            var value = req.body[key];
+            dataObj[key]=value;
+        }
+        const data = await Model.find(dataObj);
+        console.log(dataObj);
+        console.log(data);
+        Object.keys(data).length>0 ? res.status(200).send() : res.status(404).send();
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
 export{
-    postRecord,getRecord,getRecords,updateRecord,deleteRecord
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord,existRecord
 }
