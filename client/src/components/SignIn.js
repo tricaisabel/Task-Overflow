@@ -44,7 +44,7 @@ export default function SignIn(){
                     </Select>
                 </FormControl>
 
-                <label htmlFor="contained-button-file" sx={{display:"inline", m:2}}>
+                <label htmlFor="contained-button-file">
                     <Input accept="image/*" id="contained-button-file" type="file" onChange={(event)=>setPicture(event.target.value.slice(12))}/>
                     <Button variant="contained" component="span">
                         Upload profile picture
@@ -54,8 +54,7 @@ export default function SignIn(){
                 <Typography variant="body2"  sx={{ ml:1, display:"inline"}} >{picture}</Typography>
             </Box>
 
-            <Stack spacing={2}>
-                <Link href="#" variant="body" sx={{mt:3}}>You already have an account?</Link>
+            <Stack spacing={2} sx={{mt:3}}>
                 <Button variant="contained">REGISTER</Button>
             </Stack>
         </TabPanel>

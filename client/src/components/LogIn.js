@@ -16,7 +16,6 @@ export default function LogIn(){
                 </Stack>
                 <TextField label="Username" variant="outlined" required/>
                 <TextField label="Password" variant="outlined" required type="password"/>
-                <Link href="#" variant="body">You don't have an account?</Link>
                 <Button variant="contained">LOG IN</Button>
             </Stack>
         </TabPanel>

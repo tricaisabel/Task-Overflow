@@ -9,21 +9,22 @@ import Box from '@mui/material/Box';
 import LogIn from './LogIn';
 import SignIn from './SignIn';
 import { grey } from '@mui/material/colors';
+import NavBar from './Navbar'
 
 export default function SignUp() {
 
-  const [upload,setUpload]=React.useState("Upload Profile Image");
-  const [value, setValue] = React.useState('1');
+  const [tab, setTab] = React.useState('1');
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleChange = (event, newTab) => {
+    setTab(newTab);
   };
 
   return (
       <Box sx={{ bgcolor: grey[300], width:1, p:0 }} height="100vh">
+        <NavBar/>
         <Container maxWidth="sm">
           <Card variant="outlined">
-            <TabContext value={value}>
+            <TabContext value={tab}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange} aria-label="lab API tabs example">
                   <Tab label="Log In" value="1" />
