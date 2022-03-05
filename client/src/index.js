@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import Auth from './components/Auth';
+import Overview from './components/Overview';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Overview/>
+    {/* <Auth/> */}
   </React.StrictMode>,
   document.getElementById('root')
 );
