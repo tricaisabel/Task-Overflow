@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState} from 'react';
 import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
 import Tab from '@mui/material/Tab';
@@ -14,7 +14,7 @@ import './App.css';
 
 export default function SignUp() {
 
-  const [tab, setTab] = React.useState('1');
+  const [tab, setTab] = useState('1');
 
   const handleChange = (event, newTab) => {
     setTab(newTab);
