@@ -9,9 +9,26 @@ import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
 
 export default function LogIn(){
-    const login=useSelector((state)=>state.login);
+    const user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
-    const {updateLoginUsername,updateLoginPassword}=bindActionCreators(actionCreators,dispatch);
+    const {updateUserField}=bindActionCreators(actionCreators,dispatch);
+
+    async function authUser(){
+        const body= { "username":user.username, "password":user.password };
+        const response = await fetch(`http://localhost:3001/api/existUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        
+        if (response.status === 200) {
+            alert("found");
+            updateUserField("logged",true);
+        }
+        
+    }
 
     return(
         <TabPanel value="1">
@@ -20,9 +37,21 @@ export default function LogIn(){
                     <TaskAlt color="primary" sx={{ fontSize: 60}} />
                     <Typography variant="h5" sx={{ my: 5}}>Log In</Typography>
                 </Stack>
-                <TextField label="Username" variant="outlined" required onChange={(e)=>updateLoginUsername(e.target.value)}/>
-                <TextField label="Password" variant="outlined" required type="password" onChange={(e)=>updateLoginPassword(e.target.value)}/>
-                <Button variant="contained" onClick={(e)=>alert(login.username+" "+login.password)}>LOG IN</Button>
+                <TextField 
+                    label="Username" 
+                    variant="outlined" 
+                    required 
+                    onChange={(e)=>updateUserField("username",e.target.value)}/>
+                <TextField 
+                    label="Password" 
+                    variant="outlined" 
+                    required type="password" 
+                    onChange={(e)=>updateUserField("password",e.target.value)}/>
+                <Button 
+                    variant="contained" 
+                    onClick={authUser}>
+                    LOG In
+                </Button>
             </Stack>
         </TabPanel>
     )

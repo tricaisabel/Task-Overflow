@@ -75,8 +75,6 @@ async function existRecord(req,res,Model){
             dataObj[key]=value;
         }
         const data = await Model.find(dataObj);
-        console.log(dataObj);
-        console.log(data);
         Object.keys(data).length>0 ? res.status(200).send() : res.status(404).send();
     }
     catch (error) {

@@ -35,24 +35,28 @@ router.route('/timing/:id')
 //Projects
 router.route('/projects')
         .get((req,res)=>getRecords(req,res,ProjectModel))
-        .post((req,res)=>postRecord(req,res,ProjectModel))
-        .head((req,res)=>existRecord(req,res,UserModel));
+        .post((req,res)=>postRecord(req,res,ProjectModel));
 
 router.route('/project/:id')
         .get((req,res)=>getRecord(req,res,ProjectModel))    
         .patch((req,res)=>updateRecord(req,res,ProjectModel))
         .delete((req,res)=>deleteRecord(req,res,ProjectModel));
 
+router.route('/existProject')
+        .post((req,res)=>existRecord(req,res,ProjectModel));     
+
 //Users
 router.route('/users')
         .get((req,res)=>getRecords(req,res,UserModel))
-        .post((req,res)=>postRecord(req,res,UserModel))
-        .head((req,res)=>existRecord(req,res,UserModel));
+        .post((req,res)=>postRecord(req,res,UserModel));
 
 router.route('/user/:id')
         .get((req,res)=>getRecord(req,res,UserModel))    
         .patch((req,res)=>updateRecord(req,res,UserModel))
         .delete((req,res)=>deleteRecord(req,res,UserModel));
+
+router.route('/existUser')
+        .post((req,res)=>existRecord(req,res,UserModel));
 
 //Messages
 router.route('/messages')

@@ -1,16 +1,9 @@
-export const updateLoginUsername=(newUsername)=>{
+export const updateUserField=(field,value)=>{
     return(dispatch)=>{
         dispatch({
-            type:"updateUsername",
-            payload:newUsername
-        })
-    }
-}
-export const updateLoginPassword=(newPassword)=>{
-    return(dispatch)=>{
-        dispatch({
-            type:"updatePassword",
-            payload:newPassword
+            type:"updateUserField",
+            field:field,
+            value:value
         })
     }
 }
