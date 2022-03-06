@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,17 +12,19 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import {useSelector} from 'react-redux';
-
+import {useEffect,useState} from 'react';
 
 const ResponsiveAppBar = () => {
-  const user=useSelector((state)=>state.user);
+  let user=useSelector((state)=>state.user);
   let pages=[],settings=[];
   if(user.logged){
-    pages = ['Dashboard', 'My Projects', 'Blog'];
+    pages = [];
     settings = ['Edit Profile', 'Logout'];
   }
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const [profilePicture,setProfilePicture]=useState();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -39,6 +40,15 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  function loadPhoto(){
+      const imageDataURL=localStorage.getItem(user.profilePicture);
+      if(imageDataURL)
+        setProfilePicture(imageDataURL);
+  };
+
+  useEffect(loadPhoto,[]);
+
 
   return (
     <AppBar position="static">
@@ -116,7 +126,7 @@ const ResponsiveAppBar = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                {
-                 user.logged && <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                 user.logged && <Avatar id="avatar" alt={user.firstName} src={profilePicture} />
                } 
               </IconButton>
             </Tooltip>

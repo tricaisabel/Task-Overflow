@@ -13,10 +13,13 @@ import CreateProject from './CreateProject';
 import * as React from 'react';
 import Add from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
+import {useSelector} from 'react-redux';
 
 export default function Overview(){
     const [open, setOpen] = React.useState(false);
     const [create, setCreate] = React.useState(false);
+    let user=useSelector((state)=>state.user);
+
     return(
         <>
         <NavBar/>
@@ -25,7 +28,7 @@ export default function Overview(){
                 <Card variant="outlined">
                     <Stack justifyContent='center' flexDirection='row' alignItems='center' sx={{m:3}}>
                         <ListAlt color="primary" sx={{ fontSize: 30}}/>
-                        <Typography variant="h5" sx={{fontWeight: 'medium',m:2, display:'inline'}}>Your projects</Typography>
+                        <Typography variant="h5" sx={{fontWeight: 'medium',m:2, display:'inline'}}>Here are your projects, {user.firstName}</Typography>
                     </Stack>
                     <Table/>
                     <Button variant="contained" size="large" sx={{m:3}} startIcon={<Add />} onClick={(e)=>setOpen(true)}>Join new project</Button>

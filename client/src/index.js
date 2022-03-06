@@ -5,13 +5,17 @@ import Overview from './components/Overview';
 import {Provider} from 'react-redux';
 import {store} from './state/store';
 
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 ReactDOM.render(
-  <React.StrictMode>
-    {/* <Overview/> */}
-    <Provider store={store}>
-      <Auth />
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={<Auth/>} />
+        <Route exact path="/overview" element={<Overview/>} />
+      </Routes>  
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

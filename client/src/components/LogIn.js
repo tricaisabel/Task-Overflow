@@ -7,11 +7,14 @@ import TaskAlt from '@mui/icons-material/TaskAlt';
 import {useSelector, useDispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
+import {useNavigate} from "react-router-dom";
+import {useEffect} from 'react';
 
 export default function LogIn(){
+    const navigate = useNavigate();
     const user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
-    const {updateUserField}=bindActionCreators(actionCreators,dispatch);
+    const {updateUserField,updateUser}=bindActionCreators(actionCreators,dispatch);
 
     async function authUser(){
         const body= { "username":user.username, "password":user.password };
@@ -22,13 +25,21 @@ export default function LogIn(){
             },
             body: JSON.stringify(body)
         });
-        
         if (response.status === 200) {
-            alert("found");
             updateUserField("logged",true);
+            const userData=await response.json();
+            updateUser(userData[0])
+
+            navigate("/overview", {
+            replace: true,
+            });
         }
         
     }
+
+    // useEffect(()=>{
+    //     console.log(user);
+    // },[user])
 
     return(
         <TabPanel value="1">
