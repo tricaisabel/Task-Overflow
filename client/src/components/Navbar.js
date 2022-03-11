@@ -13,16 +13,13 @@ import MenuItem from '@mui/material/MenuItem';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import {useSelector} from 'react-redux';
 import {useEffect,useState} from 'react';
+import {useNavigate} from "react-router-dom";
 
 const ResponsiveAppBar = () => {
   let user=useSelector((state)=>state.user);
-  let pages=[],settings=[];
-  if(user.logged){
-    pages = [];
-    settings = ['Edit Profile', 'Logout'];
-  }
+  const navigate = useNavigate();
 
-  const [profilePicture,setProfilePicture]=useState();
+  const [profilePicture,setProfilePicture]=useState("");
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -41,14 +38,9 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  function loadPhoto(){
-      const imageDataURL=localStorage.getItem(user.profilePicture);
-      if(imageDataURL)
-        setProfilePicture(imageDataURL);
-  };
-
-  useEffect(loadPhoto,[]);
-
+  useEffect(()=>{
+    setProfilePicture(localStorage.getItem(user.profilePicture));
+  },[])
 
   return (
     <AppBar position="static">
@@ -93,13 +85,6 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {
-                pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))
-              }
             </Menu>
           </Box>
           <Typography
@@ -111,23 +96,13 @@ const ResponsiveAppBar = () => {
             Task Overflow
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+    
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={user.firstName+" "+user.lastName}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-               {
-                 user.logged && <Avatar id="avatar" alt={user.firstName} src={profilePicture} />
-               } 
+               <Avatar id="avatar" alt={user.firstName} src={profilePicture} /> 
               </IconButton>
             </Tooltip>
             <Menu
@@ -146,11 +121,12 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={()=>navigate("/")}>
+                <Typography textAlign="center">Log out</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">My profile</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

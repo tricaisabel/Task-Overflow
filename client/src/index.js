@@ -3,18 +3,20 @@ import ReactDOM from 'react-dom';
 import Auth from './components/Auth';
 import Overview from './components/Overview';
 import {Provider} from 'react-redux';
-import {store} from './state/store';
-
+import store,{persistor} from './state/store';
+import {PersistGate} from 'redux-persist/integration/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <Routes>
-        <Route exact path="/" element={<Auth/>} />
-        <Route exact path="/overview" element={<Overview/>} />
-      </Routes>  
-    </BrowserRouter>
+    <PersistGate persistor={persistor}>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Auth/>} />
+          <Route exact path="/overview" element={<Overview/>} />
+        </Routes>  
+      </BrowserRouter>
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 );

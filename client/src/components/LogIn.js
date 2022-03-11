@@ -8,13 +8,14 @@ import {useSelector, useDispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
 import {useNavigate} from "react-router-dom";
-import {useEffect} from 'react';
+import {useState} from 'react';
 
 export default function LogIn(){
     const navigate = useNavigate();
     const user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
     const {updateUserField,updateUser}=bindActionCreators(actionCreators,dispatch);
+    const [found,setFound]=useState("none");
 
     async function authUser(){
         const body= { "username":user.username, "password":user.password };
@@ -28,18 +29,17 @@ export default function LogIn(){
         if (response.status === 200) {
             updateUserField("logged",true);
             const userData=await response.json();
-            updateUser(userData[0])
-
-            navigate("/overview", {
-            replace: true,
-            });
+            Object.keys(userData[0]).forEach(function(key) {
+                console.log(key+" "+userData[0][key]);
+                updateUserField(key,userData[0][key]);
+            })
+            navigate("/overview");
+        }
+        else{
+            setFound("block");
         }
         
     }
-
-    // useEffect(()=>{
-    //     console.log(user);
-    // },[user])
 
     return(
         <TabPanel value="1">
@@ -58,6 +58,7 @@ export default function LogIn(){
                     variant="outlined" 
                     required type="password" 
                     onChange={(e)=>updateUserField("password",e.target.value)}/>
+                <Typography variant="body2" color="red" display={found}>Username or password is incorrect</Typography>
                 <Button 
                     variant="contained" 
                     onClick={authUser}>
