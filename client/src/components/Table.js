@@ -10,23 +10,21 @@ import { Button } from '@mui/material';
 import { LinearProgress } from '@mui/material'; 
 import { Avatar } from '@mui/material';
 import { Tooltip } from '@mui/material';
-
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+import {useSelector} from 'react-redux';
+import {useState,useEffect} from 'react';
 
 export default function BasicTable() {
+  
+  const projects=useSelector((state)=>state.projects);
+  const [existProjects,setExistProjects]=useState("none");
+
+  useEffect(()=>{
+    if(projects.length>0)
+      setExistProjects("block");
+  },[projects]);
+
   return (
-    <TableContainer component={Paper} sx={{m:3, width:'auto'}}>
+    <TableContainer component={Paper} sx={{m:3, width:'auto'}} display={existProjects}>
       <Table aria-label="simple table" size="small">
         <TableHead>
           <TableRow>
@@ -39,17 +37,17 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {projects.map((row) => (
             <TableRow key={row.name} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell align="left" component="th" scope="row" sx={{width:0.2}}>{row.name}</TableCell>
-                <TableCell align="left" sx={{width:0.3}}>{row.calories}</TableCell>
-                <TableCell align="left" sx={{width:0.1}}>{row.fat}</TableCell>
+                <TableCell align="left" sx={{width:0.3}}>{row.description}</TableCell>
+                <TableCell align="left" sx={{width:0.1}}>{row.deadline.slice(0,row.deadline.indexOf("T"))}</TableCell>
                 <TableCell align="left" sx={{width:0.2}}>
-                    <LinearProgress variant="determinate" value={row.carbs} sx={{borderRadius:5}}/>
+                    <LinearProgress variant="determinate" value={row.progress} sx={{borderRadius:5}}/>
                 </TableCell>
                 <TableCell align="right" sx={{width:0.07}}>
-                    <Tooltip title="Cindy Baker" placement="right">
-                      <Avatar alt="Cindy Baker" src="#"/>
+                    <Tooltip title={row.manager.name} placement="right">
+                      <Avatar alt={row.manager.name} src={localStorage.getItem(row.manager.picture)}/>
                     </Tooltip>
                 </TableCell>
                 <TableCell align="left" sx={{width:0.1, py:0}}>

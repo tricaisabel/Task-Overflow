@@ -8,9 +8,7 @@ function changeState(state,field,value){
     return newState;
 }
 
-export default function userReducer(state=initialState,action){
-    console.log(action);
-    
+export default function userReducer(state=initialState,action){   
     if(action.type==="updateUserField" && fields.includes(action.field)){
         state=changeState(state,action.field,action.value);
         return state; 

@@ -21,9 +21,19 @@ const ProjectSchema=new mongoose.Schema({
         type:Number,
         required:true
     },
-    managerId:{
-        type:String,
-        required:true
+    manager:{
+        name:{
+            type:String,
+            required:true
+        },
+        picture:{
+            type:String,
+            required:true
+        }
+    },
+    team:{
+        type:Array,
+        required:false
     }
 });
 

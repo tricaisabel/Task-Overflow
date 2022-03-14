@@ -8,9 +8,8 @@ import ProjectModel from './models/projects.js';
 import MessageModel from './models/messages.js';
 
 import {
-    postRecord,getRecord,getRecords,updateRecord,deleteRecord, existRecord
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord, existRecord,getUserProjects
 } from './service.js'
-import TeamModel from './models/team.js';
 
 //Items
 router.route('/items')
@@ -43,7 +42,9 @@ router.route('/project/:id')
         .delete((req,res)=>deleteRecord(req,res,ProjectModel));
 
 router.route('/existProject')
-        .post((req,res)=>existRecord(req,res,ProjectModel));     
+        .post((req,res)=>existRecord(req,res,ProjectModel)); 
+router.route("/userProjects/:username")
+        .get((req,res)=>getUserProjects(req,res,ProjectModel));
 
 //Users
 router.route('/users')
@@ -67,16 +68,5 @@ router.route('/message/:id')
         .get((req,res)=>getRecord(req,res,MessageModel))    
         .patch((req,res)=>updateRecord(req,res,MessageModel))
         .delete((req,res)=>deleteRecord(req,res,MessageModel));
-
-//Teams
-//Messages
-router.route('/teams')
-        .get((req,res)=>getRecords(req,res,TeamModel))
-        .post((req,res)=>postRecord(req,res,TeamModel)) ;
-
-router.route('/team/:id')
-        .get((req,res)=>getRecord(req,res,TeamModel))    
-        .patch((req,res)=>updateRecord(req,res,TeamModel))
-        .delete((req,res)=>deleteRecord(req,res,TeamModel));
 
 export default router;

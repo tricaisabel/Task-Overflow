@@ -31,7 +31,7 @@ async function getRecords(req, res, Model){
 async function getRecord(req, res, Model){
     try {
         const data = await Model.findById(req.params.id);
-        res.json(data)
+        res.json(data).status(200)
     }
     catch (error) {
         res.status(500).json({ message: error.message })
@@ -82,6 +82,16 @@ async function existRecord(req,res,Model){
     }
 }
 
+async function getUserProjects(req,res,Model){
+    try {
+        const data = await Model.find( { team: req.params.username } )
+        res.json(data).status(200);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
 export{
-    postRecord,getRecord,getRecords,updateRecord,deleteRecord,existRecord
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord,existRecord, getUserProjects
 }

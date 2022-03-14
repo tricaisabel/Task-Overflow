@@ -13,28 +13,28 @@ import CreateProject from './CreateProject';
 import * as React from 'react';
 import Add from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {useEffect} from 'react';
+import {bindActionCreators} from 'redux';
+import * as actionCreators from '../state/actionCreators';
 
 export default function Overview(){
     const [open, setOpen] = React.useState(false);
     const [create, setCreate] = React.useState(false);
+
     let user=useSelector((state)=>state.user);
-    const isMember=user.role==="member"? true : false;
-    console.log(isMember);
-    console.log(user.role)
+    const dispatch=useDispatch();
+    const {addProjects}=bindActionCreators(actionCreators,dispatch);
 
     async function getProjects(){
-        const response = await fetch(`http://localhost:3001/api/projects`);
+        const response = await fetch(`http://localhost:3001/api/userProjects/${user.username}`);
         if(response.status===200){
             const data=await response.json();
-            //get projects that the user participates in
+            addProjects(data);
         }
     }
     useEffect(()=>{
-        //get project
-        //send to store
-        
+        getProjects();
     },[]);
 
     return(

@@ -1,16 +1,8 @@
 let initialState=[];
 
-function changeState(state,project){
-    let newState=[...state];
-    newState.add(project);
-    return newState;
-}
-
-export default function userReducer(state=initialState,action){
-    console.log(action);
-    
-    if(action.type==="addProject"){
-        state=changeState(state,action.payload);
+export default function userReducer(state=initialState,action){  
+    if(action.type==="addProjects"){
+        state=action.payload;
         return state; 
     }
     else{

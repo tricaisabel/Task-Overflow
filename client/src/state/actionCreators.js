@@ -15,3 +15,11 @@ export const updateUser=(user)=>{
         })
     }
 }
+export const addProjects=(projects)=>{
+    return(dispatch)=>{
+        dispatch({
+            type:"addProjects",
+            payload:projects
+        })
+    }
+}

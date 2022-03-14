@@ -14,7 +14,7 @@ export default function LogIn(){
     const navigate = useNavigate();
     const user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
-    const {updateUserField,updateUser}=bindActionCreators(actionCreators,dispatch);
+    const {updateUserField}=bindActionCreators(actionCreators,dispatch);
     const [found,setFound]=useState("none");
 
     async function authUser(){
@@ -30,7 +30,6 @@ export default function LogIn(){
             updateUserField("logged",true);
             const userData=await response.json();
             Object.keys(userData[0]).forEach(function(key) {
-                console.log(key+" "+userData[0][key]);
                 updateUserField(key,userData[0][key]);
             })
             navigate("/overview");
