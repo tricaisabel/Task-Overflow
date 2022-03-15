@@ -23,3 +23,11 @@ export const addProjects=(projects)=>{
         })
     }
 }
+
+export const initialState=()=>{
+    return(dispatch)=>{
+        dispatch({
+            type:"initialState"
+        })
+    }
+}

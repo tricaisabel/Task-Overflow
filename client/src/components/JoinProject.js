@@ -12,7 +12,7 @@ import { Typography } from '@mui/material';
 import {useSelector, useDispatch} from 'react-redux';
 
 export default function JoinProject(props) {
-  const [projectName,setProjectName]=useState("");
+  const [projectId,setProjectId]=useState("");
   const [projectPassword,setProjectPassword]=useState("");
   const [found,setFound]=useState("none");
   const [member,setMember]=useState("none");
@@ -37,7 +37,7 @@ export default function JoinProject(props) {
   }
 
   async function joinProject(){
-    const body= { "name":projectName, "password":projectPassword };
+    const body= { "_id":projectId, "password":projectPassword };
     const response = await fetch(`http://localhost:3001/api/existProject`, {
         method: 'POST',
         headers: {
@@ -71,11 +71,11 @@ export default function JoinProject(props) {
         </DialogContentText>
         <Stack spacing={1} sx={{mt:3}}>
             <TextField 
-              label="Project name" 
+              label="Project ID" 
               variant="outlined" 
               required 
               autoFocus 
-              onChange={(e)=>setProjectName(e.target.value)}/>
+              onChange={(e)=>setProjectId(e.target.value)}/>
             <TextField 
               label="Project Password" 
               variant="outlined" 

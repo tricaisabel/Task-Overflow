@@ -12,51 +12,77 @@ import { Avatar } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import {useSelector} from 'react-redux';
 import {useState,useEffect} from 'react';
+import IconButton from '@mui/material/IconButton';
+import ShareIcon from '@mui/icons-material/Share';
 
-export default function BasicTable() {
-  
-  const projects=useSelector((state)=>state.projects);
+export default function BasicTable(props) {
   const [existProjects,setExistProjects]=useState("none");
+  const projects=useSelector((state)=>state.projects);
+  const user=useSelector((state)=>state.user);
+  const tableHead=["Project Name", "Project Description","Deadline","Progress","Manager","View"];
 
   useEffect(()=>{
     if(projects.length>0)
       setExistProjects("block");
   },[projects]);
 
+  function handleEdit(row){
+    props.setEdit(row);
+  }
+
   return (
+    <>
     <TableContainer component={Paper} sx={{m:3, width:'auto'}} display={existProjects}>
       <Table aria-label="simple table" size="small">
         <TableHead>
           <TableRow>
-            <TableCell align="left">Project Name</TableCell>
-            <TableCell align="left">Project Description</TableCell>
-            <TableCell align="left">Deadline</TableCell>
-            <TableCell align="left">Progress</TableCell>
-            <TableCell align="left">Manager</TableCell>
-            <TableCell align="left">View</TableCell>
+            {
+              tableHead.map((title,index)=><TableCell key={index}align="left">{title}</TableCell>)
+            }
+            {
+              user.role==="manager" && <TableCell align="left">Edit</TableCell>
+            }
+            {
+              user.role==="manager" && <TableCell align="left">Share</TableCell>
+            }
           </TableRow>
         </TableHead>
         <TableBody>
           {projects.map((row) => (
             <TableRow key={row.name} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell align="left" component="th" scope="row" sx={{width:0.2}}>{row.name}</TableCell>
-                <TableCell align="left" sx={{width:0.3}}>{row.description}</TableCell>
-                <TableCell align="left" sx={{width:0.1}}>{row.deadline.slice(0,row.deadline.indexOf("T"))}</TableCell>
-                <TableCell align="left" sx={{width:0.2}}>
+                <TableCell align="left" component="th" scope="row">{row.name}</TableCell>
+                <TableCell align="left">{row.description.slice(0,80)+"..."}</TableCell>
+                <TableCell align="left">{row.deadline.slice(0,row.deadline.indexOf("T"))}</TableCell>
+                <TableCell align="left">
                     <LinearProgress variant="determinate" value={row.progress} sx={{borderRadius:5}}/>
                 </TableCell>
-                <TableCell align="right" sx={{width:0.07}}>
+                <TableCell align="right">
                     <Tooltip title={row.manager.name} placement="right">
                       <Avatar alt={row.manager.name} src={localStorage.getItem(row.manager.picture)}/>
                     </Tooltip>
                 </TableCell>
-                <TableCell align="left" sx={{width:0.1, py:0}}>
-                    <Button variant="outlined">Open</Button>
+                <TableCell align="left">
+                    <Button variant="contained">Open</Button>
                 </TableCell>
+                {
+                  row.manager.name===user.username && 
+                  <TableCell align="left">
+                    <Button variant="outlined" onClick={()=>handleEdit(row)}>Edit</Button>
+                  </TableCell>
+                }
+                {
+                  row.manager.name===user.username &&
+                  <TableCell align="left" sx={{width:"auto", py:0}}>
+                    <IconButton aria-label="share" color="primary" onClick={()=>props.setShare(row)}>
+                      <ShareIcon/>
+                    </IconButton>
+                  </TableCell>
+                }
         </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+    </>
   );
 }

@@ -13,6 +13,10 @@ export default function userReducer(state=initialState,action){
         state=changeState(state,action.field,action.value);
         return state; 
     }
+    else if(action.type==="initialState"){
+        state=initialState;
+        return state;
+    }
     else{
         return state;
     }
