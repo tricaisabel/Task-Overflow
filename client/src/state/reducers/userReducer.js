@@ -1,4 +1,4 @@
-let fields=["logged","id","username","gitUsername","firstName","lastName","password","job","role","profilePicture"];
+let fields=["logged","id","username","gitUsername","firstName","lastName","password","job","role","color"];
 let initialState={"logged":false};
 fields.forEach(field=>initialState[field]="");
 

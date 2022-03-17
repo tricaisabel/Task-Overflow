@@ -28,14 +28,25 @@ export default function Overview(){
 
     let user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
-    const {addProjects}=bindActionCreators(actionCreators,dispatch);
+    const {addProjects,noProjects}=bindActionCreators(actionCreators,dispatch);
 
     async function getProjects(){
-        const response = await fetch(`http://localhost:3001/api/userProjects/${user.username}`);
-        if(response.status===200){
+        const body= { "team":user.firstName+" "+user.lastName };
+        const response = await fetch(`http://localhost:3001/api/existProject`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (response.status === 200) {
             const data=await response.json();
             addProjects(data);
-        }
+            console.log(data);
+        } 
+        else if(response.status===404){
+            noProjects();
+        }     
     }
     useEffect(()=>{
         getProjects();
@@ -52,9 +63,9 @@ export default function Overview(){
                         <Typography variant="h5" sx={{fontWeight: 'medium',m:2, display:'inline'}}>Here are your projects, {user.firstName}</Typography>
                     </Stack>
                     <Table setEdit={setEdit} setShare={setShare}/>
-                   <Button variant="contained" size="large" sx={{m:3}} startIcon={<Add />} onClick={(e)=>setOpen(true)}>Join new project</Button>
+                   <Button variant="contained" size="large" sx={{m:3}} startIcon={<Add />} onClick={(e)=>setOpen(true)}>Join a new project</Button>
                    {
-                    user.role==="manager" && <Button variant="contained" size="large" sx={{m:3}} startIcon={<Edit />} onClick={(e)=>setCreate(true)}>Create new project</Button>
+                    user.role==="manager" && <Button variant="contained" size="large" sx={{m:3}} startIcon={<Edit />} onClick={(e)=>setCreate(true)}>Create a new project</Button>
                     }
                     {open && <JoinProject open={open} setOpen={setOpen}/>  }                   
                     {create && <CreateProject create={create} setCreate={setCreate}/> }  

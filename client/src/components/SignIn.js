@@ -27,6 +27,7 @@ export default function SignIn(){
         if(user.password!==password2)
             setError(true);
         else{
+            updateUserField("color",Math.floor(Math.random()*16777215).toString(16));
             const response = await fetch(`http://localhost:3001/api/users`, {
             method: 'POST',
             headers: {
@@ -47,17 +48,6 @@ export default function SignIn(){
     function handleRole(event){
         updateUserField("role",event.target.value);
         setRole(event.target.value);
-    }
-
-    function handlePicture(event){
-        updateUserField("profilePicture",event.target.value.slice(12));
-        setPicture(event.target.value.slice(12));
-        console.log(event.target.files);
-        const reader=new FileReader();
-        reader.addEventListener("load",()=>{
-            localStorage.setItem(event.target.value.slice(12),reader.result);
-        })
-        reader.readAsDataURL(event.target.files[0])
     }
 
     return(
@@ -129,19 +119,6 @@ export default function SignIn(){
                         <MenuItem value={"member"}>Member</MenuItem>
                     </Select>
                 </FormControl>
-
-                <label htmlFor="contained-button-file">
-                    <Input 
-                        accept="image/*" 
-                        id="contained-button-file" 
-                        type="file" 
-                        onChange={(e)=>handlePicture(e)}/>
-                    <Button variant="contained" component="span">
-                        Upload profile picture
-                    </Button>
-                </label>
-
-                <Typography variant="body2"  sx={{ ml:1, display:"inline"}} >{picture}</Typography>
             </Box>
 
             <Stack spacing={2} sx={{mt:3}}>

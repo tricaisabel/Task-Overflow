@@ -6,6 +6,7 @@ import {Provider} from 'react-redux';
 import store,{persistor} from './state/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Project from './components/Project';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -14,6 +15,7 @@ ReactDOM.render(
         <Routes>
           <Route exact path="/" element={<Auth/>} />
           <Route exact path="/overview" element={<Overview/>} />
+          <Route exact path="/project/:id" element={<Project/>} />
         </Routes>  
       </BrowserRouter>
     </PersistGate>

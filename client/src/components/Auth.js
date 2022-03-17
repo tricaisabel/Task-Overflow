@@ -11,22 +11,13 @@ import SignIn from './SignIn';
 import { grey } from '@mui/material/colors';
 import NavBar from './Navbar'
 import './App.css';
-import {useDispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as actionCreators from '../state/actionCreators';
 
 export default function SignUp() {
 
   const [tab, setTab] = useState('1');
-  const dispatch=useDispatch();
-  const {initialState}=bindActionCreators(actionCreators,dispatch);
   const handleChange = (event, newTab) => {
     setTab(newTab);
   };
-
-  window.onload=()=>{
-    initialState();
-  }
 
   return (
       <>

@@ -26,7 +26,11 @@ const ProjectSchema=new mongoose.Schema({
             type:String,
             required:true
         },
-        picture:{
+        color:{
+            type:String,
+            required:true
+        },
+        job:{
             type:String,
             required:true
         }

@@ -9,15 +9,19 @@ const MessageSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    parentId:{
+    sender:{
         type:String,
+        required:true
+    },
+    recipient:{
+        type:Array,
         required:true
     },
     time:{
         type:Date,
         required:true
     },
-    userId:{
+    type:{
         type:String,
         required:true
     }

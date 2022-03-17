@@ -2,13 +2,12 @@ import express from 'express';
 const router=express.Router();
 
 import ItemModel from './models/items.js';
-import TimingModel from './models/timings.js';
 import UserModel from './models/users.js';
 import ProjectModel from './models/projects.js';
 import MessageModel from './models/messages.js';
 
 import {
-    postRecord,getRecord,getRecords,updateRecord,deleteRecord, existRecord,getUserProjects
+    postRecord,getRecord,getRecords,updateRecord,deleteRecord, existRecord
 } from './service.js'
 
 //Items
@@ -20,16 +19,6 @@ router.route('/item/:id')
         .get((req,res)=>getRecord(req,res,ItemModel))    
         .patch((req,res)=>updateRecord(req,res,ItemModel))
         .delete((req,res)=>deleteRecord(req,res,ItemModel));
-
-//Item's Timing
-router.route('/timings')
-        .get((req,res)=>getRecords(req,res,TimingModel))
-        .post((req,res)=>postRecord(req,res,TimingModel)) ;
-
-router.route('/timing/:id')
-        .get((req,res)=>getRecord(req,res,TimingModel))    
-        .patch((req,res)=>updateRecord(req,res,TimingModel))
-        .delete((req,res)=>deleteRecord(req,res,TimingModel));
 
 //Projects
 router.route('/projects')
@@ -43,8 +32,6 @@ router.route('/project/:id')
 
 router.route('/existProject')
         .post((req,res)=>existRecord(req,res,ProjectModel)); 
-router.route("/userProjects/:username")
-        .get((req,res)=>getUserProjects(req,res,ProjectModel));
 
 //Users
 router.route('/users')
@@ -68,5 +55,7 @@ router.route('/message/:id')
         .get((req,res)=>getRecord(req,res,MessageModel))    
         .patch((req,res)=>updateRecord(req,res,MessageModel))
         .delete((req,res)=>deleteRecord(req,res,MessageModel));
+router.route('/existMessage')
+        .post((req,res)=>existRecord(req,res,MessageModel));
 
 export default router;

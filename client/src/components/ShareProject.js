@@ -26,15 +26,14 @@ export default function ShareProject(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Share Project Info"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Share Project Credentials</DialogTitle>
         <DialogContent>
-            <Stack spacing={2} sx={{mt:3}}>
+          <Stack spacing={2} sx={{mt:3}}>
           <DialogContentText id="alert-dialog-description">
-           You can copy and share this information to anyone that you would like to join your project. Once they create an account, they can press "Join Project", introduce the following credentials and they will get access to your project.
+           You can copy and share this information to anyone that you would like to join your project. 
+           Once they create an account, they can press "Join Project", introduce the following credentials and they will get access to your project.
           </DialogContentText>
-
+            <br/>
           <CopyToClipboard
             text={getCopyText()}
             onCopy={() => setCopiedText(getCopyText())}
@@ -43,7 +42,7 @@ export default function ShareProject(props) {
                     title={
                     copiedText === getCopyText()
                         ? "This was Copied!"
-                        : "Copy To Clipboard"
+                        : "Click to copy me to Clipboard"
                     }
                     placement="top"
                 >

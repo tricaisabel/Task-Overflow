@@ -29,7 +29,7 @@ export default function LogIn(){
         if (response.status === 200) {
             updateUserField("logged",true);
             const userData=await response.json();
-            Object.keys(userData[0]).forEach(function(key) {
+            Object.keys(userData[0]).forEach((key)=>{
                 updateUserField(key,userData[0][key]);
             })
             navigate("/overview");

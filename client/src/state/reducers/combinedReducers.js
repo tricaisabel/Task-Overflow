@@ -1,10 +1,12 @@
 import {combineReducers} from 'redux';
 import userReducer from './userReducer';
-import projectReducer from './userProjectReducer';
+import userProjectsReducer from './userProjectsReducer';
+import projectReducer from './projectReducer';
 
 const reducers=combineReducers({
     user:userReducer,
-    projects:projectReducer
+    userProjects:userProjectsReducer,
+    project:projectReducer
 })
 
 export default reducers;

@@ -48,10 +48,10 @@ export default function JoinProject(props) {
     if (response.status === 200) {
         const userData=await response.json();
         const project=userData[0];
-        if(project.team.includes(user.username)){
+        if(project.team.includes(user.firstName+" "+user.lastName)){
           setMember("block");
         }
-        project.team=[...project.team,user.username];
+        project.team=[...project.team,user.firstName+" "+user.lastName];
         const id=project["_id"];
         delete project["_id"];
         delete project["__v"];

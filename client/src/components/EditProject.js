@@ -16,7 +16,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 export default function EditProject(props) {
     const [usernames,setUsernames]=React.useState([]);
     let user=useSelector((state)=>state.user);
-    const [team, setTeam]=React.useState([user.username]);
+    const [team, setTeam]=React.useState([]);
     const [date,setDate]=React.useState("");
     const [project, setProject] = React.useState({
         name:props.edit.name,
@@ -26,8 +26,9 @@ export default function EditProject(props) {
         deadline:props.edit.deadline,
         progress:props.edit.progress,
         manager:{
-            name:user.username,
-            picture:user.profilePicture
+            name:user.firstName+" "+user.lastName,
+            color:user.color,
+            job:user.job
         }
     });
 
@@ -60,7 +61,6 @@ export default function EditProject(props) {
         {
             delete project.password2;
             project["team"]=team;
-            console.log(project);
             const response = await fetch(`http://localhost:3001/api/project/${props.edit["_id"]}`, {
             method: 'PATCH',
             headers: {
@@ -87,7 +87,7 @@ export default function EditProject(props) {
         if(response.status===200){
             let usernames=[];
             const data=await response.json();
-            data.map((user)=>usernames.push(user.username));
+            data.map((user)=>usernames.push(user.firstName+" "+user.lastName));
             setUsernames(usernames);
         }
     }

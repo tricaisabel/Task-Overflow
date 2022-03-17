@@ -12,12 +12,12 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import enLocale from 'date-fns/locale/en-US';
 import {useSelector} from 'react-redux';
-import Autocomplete from '@mui/material/Autocomplete';
+import MembersAuto from './MembersAuto';
 
 export default function CreateProject(props) {
-    let usernames=[];
+    
     let user=useSelector((state)=>state.user);
-    const [team, setTeam]=React.useState([user.username]);
+    const [team, setTeam]=React.useState([]);
     const [date,setDate]=React.useState("");
     const [project, setProject] = React.useState({
         name:"",
@@ -27,25 +27,17 @@ export default function CreateProject(props) {
         deadline:"",
         progress:0,
         manager:{
-            name:user.username,
-            picture:user.profilePicture
+            name:user.firstName+" "+user.lastName,
+            color:user.color,
+            job:user.job
         }
     });
-
-    async function getUsers(){
-        const response = await fetch(`http://localhost:3001/api/users`);
-        if(response.status===200){
-            const data=await response.json();
-            data.map((user)=>usernames.push(user.username));
-            console.log(usernames);
-        }
-    }
 
     async function addProject(){
         if(project.password===project.password2)
         {
             delete project.password2;
-            team.push(user.username);
+            team.push(user.firstName+" "+user.lastName);
             project["team"]=team;
             console.log(project);
             const response = await fetch(`http://localhost:3001/api/projects`, {
@@ -58,14 +50,14 @@ export default function CreateProject(props) {
             if (response.status === 200) {
                 document.location.reload();
                 props.setCreate(false);
-                alert("added");
+                alert("The new project was successfully added");
             }
             else{
-                alert("not added");
+                alert("Unfortunately something went wrong. Try again.");
             }
         }
         else{
-            alert("passwords not equal");
+            alert("The 2 project passwords are not the same");
         }
     }
     
@@ -86,8 +78,6 @@ export default function CreateProject(props) {
         addProject();
         props.setCreate(false);
     }
-
-    getUsers();
 
     return (
     <Dialog open={props.create} onClose={(e)=>props.setCreate(false)} fullWidth maxWidth='md'>
@@ -133,22 +123,7 @@ export default function CreateProject(props) {
             <DialogContentText>
                 Add your team members manually from the autocomplete list below (they must already have an account). You can always add more members manually or you can share the project info and they can join your project.
             </DialogContentText>
-            <Autocomplete
-                onChange={(e,v) =>setTeam(v)}
-                multiple
-                id="tags-outlined"
-                options={usernames}
-                getOptionLabel={(username) => username}
-                defaultValue={usernames[0]}
-                filterSelectedOptions
-                renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Team members"
-                    placeholder="Team members"
-                />
-                )}
-            />
+            <MembersAuto setValue={setTeam}/>
         </Stack>
         
     </DialogContent>
