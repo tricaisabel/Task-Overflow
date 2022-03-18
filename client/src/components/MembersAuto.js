@@ -1,9 +1,8 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { useEffect } from 'react';
 
 export default function MembersAuto(props){
-    let usernames=["all"];
+    let usernames=[];
 
     async function getUsers(){
         const response = await fetch(`http://localhost:3001/api/users`);

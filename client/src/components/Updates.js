@@ -38,7 +38,9 @@ export default function AlignItemsList() {
       };
     }
 
-    getMessages();
+    React.useEffect(()=>{
+      getMessages();
+    },[project]);
     
   return (
     <Stack>
