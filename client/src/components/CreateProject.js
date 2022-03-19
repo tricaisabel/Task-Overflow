@@ -123,7 +123,7 @@ export default function CreateProject(props) {
             <DialogContentText>
                 Add your team members manually from the autocomplete list below (they must already have an account). You can always add more members manually or you can share the project info and they can join your project.
             </DialogContentText>
-            <MembersAuto setValue={setTeam}/>
+            <MembersAuto setValue={setTeam} multiple={true}/>
         </Stack>
         
     </DialogContent>

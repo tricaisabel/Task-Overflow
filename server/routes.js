@@ -19,6 +19,8 @@ router.route('/item/:id')
         .get((req,res)=>getRecord(req,res,ItemModel))    
         .patch((req,res)=>updateRecord(req,res,ItemModel))
         .delete((req,res)=>deleteRecord(req,res,ItemModel));
+router.route('/existItems')
+        .post((req,res)=>existRecord(req,res,ItemModel));
 
 //Projects
 router.route('/projects')

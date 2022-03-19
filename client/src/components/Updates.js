@@ -14,22 +14,21 @@ export default function AlignItemsList() {
 
 
     async function getMessages(){
-       const body= { "type":project.name,"sender":project.manager.name, recipient:"all"};
-       console.log(body);
-        const response = await fetch(`http://localhost:3001/api/existMessage`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (response.status === 200) {
-            const data=await response.json();
-            setMessages(data);
-        } 
-        else if(response.status===404){
-            setMessages([]);
-        }
+      const body= { "type":project.name,"sender":project.manager.name, recipient:"all"};
+      const response = await fetch(`http://localhost:3001/api/existMessage`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      });
+      if (response.status === 200) {
+          const data=await response.json();
+          return data;
+      } 
+      else if(response.status===404){
+          return [];
+      }
     }
 
     function stringAvatar(name) {
@@ -38,14 +37,23 @@ export default function AlignItemsList() {
       };
     }
 
-    React.useEffect(()=>{
-      getMessages();
-    },[project]);
+    React.useEffect(() => {
+      let isMounted = true;              
+      getMessages().then(data => {
+        if (isMounted) setMessages(data);   
+      })
+      return () => { isMounted = false }; 
+    }, [project]);
     
   return (
     <Stack>
-      <List sx={{ width: '0.8', bgcolor: 'background.paper'}}>
       <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Project Updates</Typography>
+      <List sx={{ 
+        width: '0.8',
+         bgcolor: 'background.paper', 
+         overflow: 'auto',
+         maxHeight: 300,
+         '& ul': { padding: 0 },}}>
       {
       messages.map((message,index)=>
       <div key={index}>

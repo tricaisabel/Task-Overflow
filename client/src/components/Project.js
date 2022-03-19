@@ -98,8 +98,6 @@ export default function Project(){
         }
     }
 
-    console.log(project);
-
     useEffect(()=>{
         getProject();
     },[]);

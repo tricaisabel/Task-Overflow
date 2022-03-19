@@ -65,7 +65,7 @@ export default function Dashboard(){
             }
             </Stack>
         </Stack>
-        <Stack direction="column" width="0.5">
+        <Stack direction="column" width="0.5" spacing={2}>
             <Updates/>
             {
             user.firstName+" "+user.lastName===project.manager.name && 

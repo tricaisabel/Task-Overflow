@@ -9,7 +9,6 @@ export default function MembersAuto(props){
         if(response.status===200){
             const data=await response.json();
             data.map((user)=>usernames.push(user.firstName+" "+user.lastName));
-            console.log(usernames);
         }
     }
 
@@ -18,7 +17,7 @@ export default function MembersAuto(props){
     return(
     <Autocomplete
                 onChange={(e,v) =>props.setValue(v)}
-                multiple
+                multiple={props.multiple}
                 id="tags-outlined"
                 options={usernames}
                 getOptionLabel={(username) => username}

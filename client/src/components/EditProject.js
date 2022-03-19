@@ -11,10 +11,9 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import enLocale from 'date-fns/locale/en-US';
 import {useSelector} from 'react-redux';
-import Autocomplete from '@mui/material/Autocomplete';
+import MembersAuto from './MembersAuto';
 
 export default function EditProject(props) {
-    const [usernames,setUsernames]=React.useState([]);
     let user=useSelector((state)=>state.user);
     const [team, setTeam]=React.useState([]);
     const [date,setDate]=React.useState("");
@@ -82,18 +81,8 @@ export default function EditProject(props) {
         }
     }
 
-    async function getUsers(){
-        const response = await fetch(`http://localhost:3001/api/users`);
-        if(response.status===200){
-            let usernames=[];
-            const data=await response.json();
-            data.map((user)=>usernames.push(user.firstName+" "+user.lastName));
-            setUsernames(usernames);
-        }
-    }
     React.useEffect(()=>{
         convertDate() 
-        getUsers()
     },[]);
     
 
@@ -146,22 +135,7 @@ export default function EditProject(props) {
                     renderInput={(params) => <TextField {...params} />}
                     />
             </LocalizationProvider>
-            <Autocomplete
-                onChange={(e,v) =>setTeam(v)}
-                multiple
-                id="tags-outlined"
-                options={usernames}
-                getOptionLabel={(username) => username}
-                defaultValue={props.edit.team}
-                filterSelectedOptions
-                renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Team members"
-                    placeholder="Team members"
-                />
-                )}
-            />
+            <MembersAuto setValue={setTeam} multiple={true}/>
         </Stack>
         </DialogContent>
         <DialogActions>
