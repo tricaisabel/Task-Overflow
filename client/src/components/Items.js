@@ -10,10 +10,46 @@ import Box from '@mui/material/Box';
 import {useState} from 'react';
 import CreateItem from './CreateItem';
 import ItemList from './ItemList';
+import Kanban from './Kanban';
+import {useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as actionCreators from '../state/actionCreators';
+import {useEffect} from 'react';
 
 export default function Items(){
     const [tab, setTab] = useState('1');
     const [open,setOpen]=useState(false);
+    let project=useSelector((state)=>state.project);
+    const dispatch=useDispatch();
+    const {addItems}=bindActionCreators(actionCreators,dispatch);
+
+    useEffect(()=>{
+        getItems();
+    },[]);
+
+    async function getItems(){
+      const body= { "projectId":project["_id"]};
+      const response = await fetch(`http://localhost:3001/api/existItems`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      });
+      if (response.status === 200) {
+         const data=await response.json(); 
+            let rows=data;
+            rows.forEach((item)=>{
+                delete item["__v"];
+                delete item.timing;
+                delete item.projectId;
+                delete item.dependencies;
+            })  
+            addItems(rows);    
+      }
+    }
+
     return(
         <>
         <Stack spacing={2} sx={{mr:5}}>
@@ -38,11 +74,11 @@ export default function Items(){
                 <Tab label="Kanban" value="2" />
                 </TabList>
             </Box>
-            <TabPanel value="1">
+            <TabPanel value="1" sx={{p:1}}>
                 <ItemList/>
             </TabPanel>
-            <TabPanel value="2">
-               Kanban
+            <TabPanel value="2" sx={{p:1}}>
+               <Kanban getItems={getItems}/>
             </TabPanel>
             </TabContext>
             {open && <CreateItem create={open} setCreate={setOpen}/>}

@@ -9,11 +9,9 @@ import { LinearProgress } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import Updates from './Updates';
 import React from 'react';
-import NewMessage from './NewMessage';
 
 export default function Dashboard(){
     let project=useSelector((state)=>state.project);
-    let user=useSelector((state)=>state.user);
 
     function stringAvatar(name) {
       return {
@@ -67,13 +65,6 @@ export default function Dashboard(){
         </Stack>
         <Stack direction="column" width="0.5" spacing={2}>
             <Updates/>
-            {
-            user.firstName+" "+user.lastName===project.manager.name && 
-                <>
-                <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Send a new update</Typography>
-                <NewMessage type={project.name} all={true}/>
-                </>
-            }
         </Stack>
         </Stack>
     );

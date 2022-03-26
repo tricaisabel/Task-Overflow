@@ -7,11 +7,12 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import {useSelector} from 'react-redux';
 import { Stack } from '@mui/material';
+import NewMessage from './NewMessage';
 
 export default function AlignItemsList() {
     const [messages,setMessages]=React.useState([]);
     let project=useSelector((state)=>state.project);
-
+    let user=useSelector((state)=>state.user);
 
     async function getMessages(){
       const body= { "type":project.name,"sender":project.manager.name, recipient:"all"};
@@ -24,7 +25,7 @@ export default function AlignItemsList() {
       });
       if (response.status === 200) {
           const data=await response.json();
-          return data;
+          setMessages(data.reverse());
       } 
       else if(response.status===404){
           return [];
@@ -37,13 +38,9 @@ export default function AlignItemsList() {
       };
     }
 
-    React.useEffect(() => {
-      let isMounted = true;              
-      getMessages().then(data => {
-        if (isMounted) setMessages(data);   
-      })
-      return () => { isMounted = false }; 
-    }, [project]);
+    React.useEffect(() => {              
+      getMessages(); 
+    }, []);
     
   return (
     <Stack>
@@ -61,7 +58,7 @@ export default function AlignItemsList() {
           <ListItemAvatar>
             <Avatar  {...stringAvatar(message.sender)} sx={{bgcolor:message.color }}/>
           </ListItemAvatar>
-          <Stack direction="column">
+          <Stack direction="column"  width="100%">
             <ListItemText
               primary={message.title}
               secondary={
@@ -91,6 +88,13 @@ export default function AlignItemsList() {
         <Typography variant="body2">Currently, there are no updates</Typography>
       }
       </List>
+      {
+        user.firstName+" "+user.lastName===project.manager.name && 
+          <>
+          <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Send a new update</Typography>
+          <NewMessage type={project.name} all={true} getMessages={getMessages}/>
+          </>
+        }
     </Stack>
     
   );

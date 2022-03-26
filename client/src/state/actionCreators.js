@@ -40,6 +40,14 @@ export const addProjects=(projects)=>{
         })
     }
 }
+export const addItems=(items)=>{
+    return(dispatch)=>{
+        dispatch({
+            type:"addItems",
+            payload:items
+        })
+    }
+}
 
 export const noProjects=()=>{
     return(dispatch)=>{

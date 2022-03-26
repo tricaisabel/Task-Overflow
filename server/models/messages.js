@@ -24,6 +24,10 @@ const MessageSchema=new mongoose.Schema({
     type:{
         type:String,
         required:true
+    },
+    color:{
+        type:String,
+        required:true
     }
 });
 

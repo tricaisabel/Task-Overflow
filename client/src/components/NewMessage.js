@@ -39,6 +39,8 @@ export default function NewMessage(props){
             alert("The new message was successfully sent");
             changeState("title","");
             changeState("content","");
+
+            props.getMessages();
         }
         else{
             alert("Unfortunately something went wrong. Try again.");
@@ -55,6 +57,7 @@ export default function NewMessage(props){
                 required
                 rows={4}
                 width="100%"
+                value={message.title}
                 onChange={(e) =>changeState("title",e.target.value)}/>
             <TextField 
                 label="Message" 
@@ -63,6 +66,7 @@ export default function NewMessage(props){
                 multiline 
                 rows={4}
                 width="100%"
+                value={message.content}
                 onChange={(e) =>changeState("content",e.target.value)}/>
             <Button onClick={handleSubmit} variant="contained">Submit</Button>
         </Stack>
