@@ -40,6 +40,21 @@ export default function AlignItemsList(props) {
             props.getItems();
         }
     }
+    async function assignYourself(item){
+        let body={...item};
+        body.assignedTo=user.firstName+" "+user.lastName;
+        console.log(body);
+        const response = await fetch(`http://localhost:3001/api/item/${item["_id"]}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+        });
+        if (response.status === 200) {
+            props.getItems();
+        }
+    }
     
   return (
     <Stack
@@ -60,7 +75,7 @@ export default function AlignItemsList(props) {
             items.map((item,j)=>
             item.progress===card.value &&
             <div key={j}>
-                <ListItemButton alignItems="flex-start" disabled={item.assignedTo!==user.firstName+" "+user.lastName}>
+                <ListItemButton alignItems="flex-start" disabled={item.assignedTo!==user.firstName+" "+user.lastName && item.assignedTo!=="none"}>
                     <ListItemAvatar>
                         {
                             {
@@ -105,6 +120,18 @@ export default function AlignItemsList(props) {
                             aria-label="move selected left"
                         >
                             &lt;
+                        </Button>
+                    }
+                    {
+                        item.assignedTo==="none" &&
+                        <Button
+                            sx={{ my: 0.5 }}
+                            variant="outlined"
+                            size="small"
+                            onClick={(e)=>assignYourself(item)}
+                            aria-label="move selected left"
+                        >
+                            +
                         </Button>
                     }
                     </Stack>

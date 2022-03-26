@@ -12,66 +12,40 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {useSelector} from 'react-redux';
-import Autocomplete from '@mui/material/Autocomplete';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 
 export default function CreateProject(props) {
     
     const project=useSelector((state)=>state.project);
     const user=useSelector((state)=>state.user);
-    const [dependencies, setDependencies]=React.useState([]);
-    const [duration,setDuration]=React.useState("");
-    const [assign,setAssign]=React.useState("");
+    const [assign,setAssign]=React.useState("none");
     const [type,setType]=React.useState("task");
     const [name,setName]=React.useState("");
     const [desc,setDesc]=React.useState("");
-    let items=[];
+    const [deadline,setDeadline]=React.useState(new Date());
 
-    async function getItems(){
-        const body= { "projectId":project["_id"]};
-        const response = await fetch(`http://localhost:3001/api/existItems`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-        if (response.status === 200) {
-            const data=await response.json();
-            data.map((item)=>items.push(item.name+"-"+item.description.slice(0,100)+"..."));
-        }
-    }
-
-    getItems(); 
-
-    async function addProject(){
-        const newProject={
+    async function addItem(){
+        const newItem={
             name:name,
             description:desc,
             type:type,
-            assignedTo:assign || "",
+            assignedTo:assign,
             openedBy:user.firstName+" "+user.lastName,
             progress:0,
-            dependencies:dependencies,
-            timing:{
-                EST:0,
-                LST:0,
-                EFT:0,
-                LFT:0,
-                duration:parseInt(duration)
-            },
+            deadline:deadline,
             projectId:project["_id"]
         };
-        console.log(newProject);
+        console.log(newItem);
         const response = await fetch(`http://localhost:3001/api/items`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newProject)
+        body: JSON.stringify(newItem)
         });
         if (response.status === 200) {
-            document.location.reload();
-            props.setCreate(false);
             alert("The new item was successfully added");
         }
         else{
@@ -80,7 +54,8 @@ export default function CreateProject(props) {
     }
 
     function handleSubmit(){
-        addProject();
+        addItem();
+        props.getItems();
         props.setCreate(false);
     }
 
@@ -117,52 +92,35 @@ export default function CreateProject(props) {
                     <MenuItem value={"bug"}>Bug</MenuItem>
                 </Select>
             </FormControl>
-            <TextField 
-                label="Item Duration (days)" 
-                variant="outlined" 
-                required 
-                onChange={(e) =>setDuration(e.target.value)}/>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                renderInput={(params) => <TextField {...params} />}
+                label="Item deadline"
+                value={deadline}
+                onChange={(newValue) => {
+                    setDeadline(newValue);
+                }}
+                minDateTime={new Date()}
+                />
+            </LocalizationProvider>
             
             <DialogTitle>Assign the item (optional)</DialogTitle>
             <DialogContentText>
                 This is the person that will have to complete the work item. You can leave this unassigned and assign it later, or you can assign it right now.
             </DialogContentText>
-            <Autocomplete
-                    onChange={(e,v) =>setAssign(v)}
-                    id="tags-outlined"
-                    options={project.team}
-                    getOptionLabel={(member) => member}
-                    defaultValue={project.team[0]}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Assign"
-                        placeholder="Select the person you want to assign"
-                    />
-                    )}
-                />
-
-            <DialogTitle>Add dependencies (optional)</DialogTitle>
-            <DialogContentText>
-                Select other work items that need to be done in order for this new item to start. Example: the task to wash fruits is dependent on the task to buy fruits from the market in the first place.
-            </DialogContentText>
-            <Autocomplete
-                    onChange={(e,v) =>setDependencies(v)}
-                    multiple
-                    id="tags-outlined"
-                    options={items}
-                    getOptionLabel={(item) => item}
-                    defaultValue={items[0]}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Dependent items"
-                        placeholder="Select the items you depend on"
-                    />
-                    )}
-                />
+            <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={assign}
+                label="Assign item"
+                onChange={(e)=>setAssign(e.target.value)}
+            >
+                {
+                    project.team.map((member,index)=>
+                    <MenuItem value={member} key={index}>{member}</MenuItem>
+                )}
+                <MenuItem value={"none"}>None</MenuItem>
+            </Select>
         </Stack>
         
     </DialogContent>

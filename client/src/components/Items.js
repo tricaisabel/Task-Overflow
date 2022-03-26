@@ -75,13 +75,13 @@ export default function Items(){
                 </TabList>
             </Box>
             <TabPanel value="1" sx={{p:1}}>
-                <ItemList/>
+                <ItemList getItems={getItems}/>
             </TabPanel>
             <TabPanel value="2" sx={{p:1}}>
                <Kanban getItems={getItems}/>
             </TabPanel>
             </TabContext>
-            {open && <CreateItem create={open} setCreate={setOpen}/>}
+            {open && <CreateItem create={open} setCreate={setOpen} getItems={getItems}/>}
         </Card>
         </Container>
         </>

@@ -25,31 +25,9 @@ const ItemSchema=new mongoose.Schema({
         type:Number,
         required:true
     },
-    dependencies:{
-        type:Array,
+    deadline:{
+        type:Date,
         required:true
-    },
-    timing:{
-        EST:{
-            type:Number,
-            required:true
-        },
-        LST:{
-            type:Number,
-            required:true
-        },
-        EFT:{
-            type:Number,
-            required:true
-        },
-        LFT:{
-            type:Number,
-            required:true
-        },
-        duration:{
-            type:Number,
-            required:true
-        }
     },
     projectId:{
         type:String,

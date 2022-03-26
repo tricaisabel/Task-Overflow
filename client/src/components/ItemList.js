@@ -9,14 +9,16 @@ const columns = [
   { field: 'description', headerName: 'Description', width: 500 },
   { field: 'openedBy', headerName: 'Opened By',width: 150,},
   { field: 'assignedTo', headerName: 'Assigned To',width: 150,},
-  { field: 'progress', headerName: 'Progress',width: 100, type:'number'}
+  { field: 'progress', headerName: 'Progress',width: 100, type:'number'},
+  { field: 'deadline', headerName: 'Deadline',width: 150}
 ];
 
 
-export default function DataTable() {
+export default function DataTable(props) {
     const [tableData,setTableData] = React.useState([]);
     let items=useSelector((state)=>state.items);
     useEffect(()=>{
+        props.getItems();
         setTableData(items);
     },[]);
 
