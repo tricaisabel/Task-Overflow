@@ -16,6 +16,7 @@ import EditItem from './EditItem';
 export default function AlignItemsList(props) {
     const items=useSelector((state)=>state.items);
     const user=useSelector((state)=>state.user);
+    const project=useSelector((state)=>state.project);
     const [open,setOpen]=React.useState(false);
     const [selectedItem,setSelected]=React.useState({});
     const cards=[
@@ -71,6 +72,11 @@ export default function AlignItemsList(props) {
                 return "black";
         }
     }
+
+    function getRights(item){
+        const availableTo=[item.assignedTo,item.openedBy,project.manager.name];
+        return !availableTo.includes(user.firstName+" "+user.lastName);        
+    }
     
   return (
     <Stack
@@ -94,7 +100,7 @@ export default function AlignItemsList(props) {
                 <ListItemButton 
                     onClick={(e)=>{setOpen(true); setSelected(item)}}
                     alignItems="flex-start" 
-                    disabled={item.assignedTo!==user.firstName+" "+user.lastName && item.assignedTo!=="none"}>
+                    disabled={getRights(item)}>
                     <ListItemAvatar>
                         {
                             {
@@ -157,6 +163,19 @@ export default function AlignItemsList(props) {
                             aria-label="move selected left"
                         >
                             +
+                        </Button>
+                    }
+                    {
+                        !getRights(item) && i===2 &&
+                        <Button
+                            sx={{ my: 0.5 }}
+                            variant="outlined"
+                            size="small"
+                            color="error"
+                            onClick={(e)=>{e.stopPropagation(); assignYourself(item)}}
+                            aria-label="move selected left"
+                        >
+                            delete
                         </Button>
                     }
                     </Stack>

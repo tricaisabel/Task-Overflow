@@ -11,13 +11,38 @@ import Updates from './Updates';
 import React from 'react';
 
 export default function Dashboard(){
-    let project=useSelector((state)=>state.project);
+    const project=useSelector((state)=>state.project);
+    const [progress,setProgress]=React.useState(0);
+
+    async function calcProjectProgress(){
+      const body= { "projectId":project["_id"]};
+      console.log(body);
+      const response = await fetch(`http://localhost:3001/api/existItems`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      });
+      if (response.status === 200) {
+        const data=await response.json(); 
+        var sum = 0;
+        data.forEach(row=>{
+            sum+=row.progress;
+        });
+        setProgress(Math.round(sum/data.length));
+      }
+    }
 
     function stringAvatar(name) {
       return {
           children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
       };
     }
+
+    React.useEffect(()=>{
+        calcProjectProgress();
+    })
 
     return(
         <Stack direction="row" justifyContent="space-between">
@@ -32,8 +57,8 @@ export default function Dashboard(){
                 <Chip label={project["_id"]} sx={{ml:1}}/>
             </Typography>
             <Stack direction="row" alignItems="center">
-                <LinearProgress variant="determinate" value={project.progress} sx={{borderRadius:5, width:"0.5", mr:2}}/>
-                <Typography variant="body2">{project.progress}%</Typography>
+                <LinearProgress variant="determinate" value={progress} sx={{borderRadius:5, width:"0.5", mr:2}}/>
+                <Typography variant="body2">{progress}%</Typography>
             </Stack>
             <Typography variant="body">{project.description}</Typography>
             <Typography>Deadline: {project.deadline.slice(0,10)}</Typography>

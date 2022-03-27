@@ -61,7 +61,7 @@ export default function Items(){
         <>
         <Stack spacing={2} sx={{mr:5}}>
         <Typography variant="h4">Item Center</Typography>
-        <Typography variant="body">Items are pieces of work that need to be done. Items can be assigned to whomever you want from the profect team (including yourself). 
+        <Typography variant="body">Items are pieces of work that need to be done. Items can be assigned to whomever you want from the project team (including yourself). 
         <br/>Everyone can add a new item so that team the is aware of the state of the project.</Typography>
         </Stack>
         <Button 
