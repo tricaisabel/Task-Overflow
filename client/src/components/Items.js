@@ -20,6 +20,7 @@ import {useEffect} from 'react';
 export default function Items(){
     const [tab, setTab] = useState('1');
     const [open,setOpen]=useState(false);
+    const [items,setItems]=useState([]);
     let project=useSelector((state)=>state.project);
     const dispatch=useDispatch();
     const {addItems}=bindActionCreators(actionCreators,dispatch);
@@ -30,6 +31,7 @@ export default function Items(){
 
     async function getItems(){
       const body= { "projectId":project["_id"]};
+      console.log(body);
       const response = await fetch(`http://localhost:3001/api/existItems`, {
           method: 'POST',
           headers: {
@@ -46,7 +48,12 @@ export default function Items(){
                 delete item.projectId;
                 delete item.dependencies;
             })  
-            addItems(rows);    
+            addItems(rows);
+            setItems(rows);    
+      }
+      else{
+          addItems([]);
+          setItems([]);
       }
     }
 
@@ -75,7 +82,7 @@ export default function Items(){
                 </TabList>
             </Box>
             <TabPanel value="1" sx={{p:1}}>
-                <ItemList getItems={getItems}/>
+                <ItemList getItems={getItems} rows={items}/>
             </TabPanel>
             <TabPanel value="2" sx={{p:1}}>
                <Kanban getItems={getItems}/>

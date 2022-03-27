@@ -27,8 +27,8 @@ export default function AlignItemsList() {
           const data=await response.json();
           setMessages(data.reverse());
       } 
-      else if(response.status===404){
-          return [];
+      else{
+          setMessages([]);
       }
     }
 
@@ -40,7 +40,7 @@ export default function AlignItemsList() {
 
     React.useEffect(() => {              
       getMessages(); 
-    }, []);
+    }, [project]);
     
   return (
     <Stack>

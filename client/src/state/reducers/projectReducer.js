@@ -17,7 +17,6 @@ function changeState(state,field,value){
 export default function projectReducer(state=initialState,action){ 
     if(action.type==="updateProjectField"){
         state=changeState(state,action.field,action.value);
-        console.log(state);
         return state; 
     }
     else if(action.type==="updateProject"){

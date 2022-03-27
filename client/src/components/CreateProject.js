@@ -39,7 +39,6 @@ export default function CreateProject(props) {
             delete project.password2;
             team.push(user.firstName+" "+user.lastName);
             project["team"]=team;
-            console.log(project);
             const response = await fetch(`http://localhost:3001/api/projects`, {
             method: 'POST',
             headers: {

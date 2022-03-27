@@ -96,6 +96,9 @@ export default function Project(){
             });    
             updateProject(newProject);          
         }
+        else{
+          updateProject({});
+        }
     }
 
     useEffect(()=>{

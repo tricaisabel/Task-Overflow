@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Stack } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
@@ -20,11 +19,12 @@ export default function CreateProject(props) {
     
     const project=useSelector((state)=>state.project);
     const user=useSelector((state)=>state.user);
-    const [assign,setAssign]=React.useState("none");
-    const [type,setType]=React.useState("task");
-    const [name,setName]=React.useState("");
-    const [desc,setDesc]=React.useState("");
-    const [deadline,setDeadline]=React.useState(new Date());
+    const [assign,setAssign]=React.useState(props.item.assignedTo);
+    const [type,setType]=React.useState(props.item.type);
+    const [name,setName]=React.useState(props.item.name);
+    const [desc,setDesc]=React.useState(props.item.description);
+    const [deadline,setDeadline]=React.useState(props.item.deadline);
+    const [disabled]=React.useState(user.firstName+" "+user.lastName!==props.item.openedBy);
 
     async function addItem(){
         const newItem={
@@ -37,15 +37,16 @@ export default function CreateProject(props) {
             deadline:deadline,
             projectId:project["_id"]
         };
-        const response = await fetch(`http://localhost:3001/api/items`, {
-        method: 'POST',
+        const response = await fetch(`http://localhost:3001/api/item/${props.item["_id"]}`, {
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(newItem)
         });
         if (response.status === 200) {
-            alert("The new item was successfully added");
+            props.getItems();
+            props.setCreate(false);
         }
         else{
             alert("Unfortunately something went wrong. Try again.");
@@ -60,22 +61,24 @@ export default function CreateProject(props) {
 
     return (
     <Dialog open={props.create} onClose={(e)=>props.setCreate(false)} fullWidth maxWidth='md'>
-    <DialogTitle>Create a work item</DialogTitle>
+    <DialogTitle>Item Details</DialogTitle>
     <DialogContent>
         <Stack spacing={2} sx={{mt:3}}>
-            <DialogTitle>Item Details</DialogTitle>
             <TextField 
                 label="Item name" 
                 variant="outlined" 
                 required 
-                autoFocus
+                disabled={disabled}
+                defaultValue={props.item.name}
                 onChange={(e) =>setName(e.target.value)}/>
             <TextField 
-                label="Enter a suggestive description for your new item" 
+                label="Item description" 
                 variant="outlined" 
                 required 
                 multiline 
                 rows={4}
+                disabled={disabled}
+                defaultValue={props.item.description}
                 onChange={(e) =>setDesc(e.target.value)}/>
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Item type</InputLabel>
@@ -84,6 +87,8 @@ export default function CreateProject(props) {
                     id="demo-simple-select"
                     value={type}
                     label="Item type"
+                    disabled={disabled}
+                    defaultValue={props.item.type}
                     onChange={(e)=>setType(e.target.value)}
                 >
                     <MenuItem value={"task"}>Task</MenuItem>
@@ -96,22 +101,19 @@ export default function CreateProject(props) {
                 renderInput={(params) => <TextField {...params} />}
                 label="Item deadline"
                 value={deadline}
+                disabled={disabled}
                 onChange={(newValue) => {
                     setDeadline(newValue);
                 }}
                 minDateTime={new Date()}
                 />
             </LocalizationProvider>
-            
-            <DialogTitle>Assign the item (optional)</DialogTitle>
-            <DialogContentText>
-                This is the person that will have to complete the work item. You can leave this unassigned and assign it later, or you can assign it right now.
-            </DialogContentText>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={assign}
-                label="Assign item"
+                label="Assigned to"
+                disabled={disabled}
                 onChange={(e)=>setAssign(e.target.value)}
             >
                 {
@@ -125,7 +127,7 @@ export default function CreateProject(props) {
     </DialogContent>
     <DialogActions>
         <Button onClick={(e)=>props.setCreate(false)}>Cancel</Button>
-        <Button onClick={handleSubmit} variant="contained" size="large">Submit</Button>
+        {!disabled && <Button onClick={handleSubmit} variant="contained" size="large">Submit</Button>}
     </DialogActions>
     </Dialog>
     

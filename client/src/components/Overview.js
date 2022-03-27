@@ -42,7 +42,6 @@ export default function Overview(){
         if (response.status === 200) {
             const data=await response.json();
             addProjects(data);
-            console.log(data);
         } 
         else if(response.status===404){
             noProjects();

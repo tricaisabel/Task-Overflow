@@ -27,7 +27,6 @@ export default function NewMessage(props){
 
     async function handleSubmit(){
         message.recipient=["all"];
-        console.log(message);
         const response = await fetch(`http://localhost:3001/api/messages`, {
         method: 'POST',
         headers: {

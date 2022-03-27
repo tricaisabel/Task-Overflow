@@ -9,16 +9,15 @@ import { Stack } from '@mui/material';
 import TaskAlt from '@mui/icons-material/TaskAlt';
 import BugReport from '@mui/icons-material/BugReport';
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
+import ReportGmailerrorred from '@mui/icons-material/ReportGmailerrorred';
 import { Button } from '@mui/material';
-import {useDispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as actionCreators from '../state/actionCreators';
+import EditItem from './EditItem';
 
 export default function AlignItemsList(props) {
     const items=useSelector((state)=>state.items);
     const user=useSelector((state)=>state.user);
-    const dispatch=useDispatch();
-    const {addItems}=bindActionCreators(actionCreators,dispatch);
+    const [open,setOpen]=React.useState(false);
+    const [selectedItem,setSelected]=React.useState({});
     const cards=[
         {bg:'text.disabled',text:'To Do',value:0},
         {bg:'#42a5f5',text:'In Progress',value:50},
@@ -43,7 +42,6 @@ export default function AlignItemsList(props) {
     async function assignYourself(item){
         let body={...item};
         body.assignedTo=user.firstName+" "+user.lastName;
-        console.log(body);
         const response = await fetch(`http://localhost:3001/api/item/${item["_id"]}`, {
         method: 'PATCH',
         headers: {
@@ -53,6 +51,24 @@ export default function AlignItemsList(props) {
         });
         if (response.status === 200) {
             props.getItems();
+        }
+    }
+
+    function daysDifference(item) {
+        const time_diff = new Date(item.deadline).getTime() - new Date().getTime();
+        const days_diff = time_diff / (1000 * 3600 * 24);
+        return Math.round(days_diff);
+    }
+    
+    const getDateColor=(item)=>{
+        const difference=daysDifference(item);
+        switch(true){
+            case difference>0 && difference <=3:
+                return "#ff9800";
+            case difference<=0:
+                return "#f44336";
+            default:
+                return "black";
         }
     }
     
@@ -75,7 +91,10 @@ export default function AlignItemsList(props) {
             items.map((item,j)=>
             item.progress===card.value &&
             <div key={j}>
-                <ListItemButton alignItems="flex-start" disabled={item.assignedTo!==user.firstName+" "+user.lastName && item.assignedTo!=="none"}>
+                <ListItemButton 
+                    onClick={(e)=>{setOpen(true); setSelected(item)}}
+                    alignItems="flex-start" 
+                    disabled={item.assignedTo!==user.firstName+" "+user.lastName && item.assignedTo!=="none"}>
                     <ListItemAvatar>
                         {
                             {
@@ -96,6 +115,12 @@ export default function AlignItemsList(props) {
                         />
                         <Typography variant="caption"> Opened by: {item.openedBy}</Typography>
                         <Typography variant="caption"> Assigned to: {item.assignedTo===user.firstName+" "+user.lastName? "You":item.assignedTo}</Typography>
+                        <Stack direction="row" alignItems="center">
+                        {daysDifference(item)<=3 && <ReportGmailerrorred sx={{color:getDateColor(item)}}/>}
+                        <Typography variant="caption">
+                            Deadline: {item.deadline.slice(0,16).replace("T","\t")} ({daysDifference(item)>=0?daysDifference(item):0} days left)
+                        </Typography>   
+                        </Stack>                     
                     </Stack>
                     <Stack>
                     {    
@@ -104,7 +129,7 @@ export default function AlignItemsList(props) {
                             sx={{ my: 0.5 }}
                             variant="outlined"
                             size="small"
-                            onClick={(e)=>moveItem("right",item)}
+                            onClick={(e)=>{e.stopPropagation();moveItem("right",item)}}
                             aria-label="move selected right"
                         >
                             &gt;
@@ -116,7 +141,7 @@ export default function AlignItemsList(props) {
                             sx={{ my: 0.5 }}
                             variant="outlined"
                             size="small"
-                            onClick={(e)=>moveItem("left",item)}
+                            onClick={(e)=>{e.stopPropagation();moveItem("left",item)}}
                             aria-label="move selected left"
                         >
                             &lt;
@@ -128,7 +153,7 @@ export default function AlignItemsList(props) {
                             sx={{ my: 0.5 }}
                             variant="outlined"
                             size="small"
-                            onClick={(e)=>assignYourself(item)}
+                            onClick={(e)=>{e.stopPropagation(); assignYourself(item)}}
                             aria-label="move selected left"
                         >
                             +
@@ -145,6 +170,7 @@ export default function AlignItemsList(props) {
             </List>
         </Stack>
         )}
+        {open && <EditItem create={open} setCreate={setOpen} item={selectedItem} getItems={props.getItems}/>}
     </Stack>    
   );
 }
