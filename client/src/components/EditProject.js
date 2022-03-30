@@ -135,7 +135,7 @@ export default function EditProject(props) {
                     renderInput={(params) => <TextField {...params} />}
                     />
             </LocalizationProvider>
-            <MembersAuto setValue={setTeam} multiple={true}/>
+            <MembersAuto setValue={setTeam} multiple={true} title="Project Members" team={props.edit.team}/>
         </Stack>
         </DialogContent>
         <DialogActions>

@@ -19,10 +19,16 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LogOutIcon from '@mui/icons-material/Logout';
 import GroupIcon from '@mui/icons-material/Group';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import Settings from '@mui/icons-material/Settings';
+import ShareIcon from '@mui/icons-material/Share';
 import NavBar from './Navbar';
 import {useNavigate} from "react-router-dom";
 import Dashboard from './Dashboard';
 import Items from './Items';
+import ShareProject from './ShareProject';
+import EditProject from './EditProject';
+
 
 const drawerWidth = 200;
 
@@ -79,6 +85,8 @@ export default function Project(){
     const dispatch=useDispatch();
     const {updateProject}=bindActionCreators(actionCreators,dispatch);
     const [tab,setTab]=useState(1);
+    const [edit,setEdit]=useState("");
+    const [share,setShare]=useState("");
 
     const tabs=[
         {icon:<HomeIcon/>, name:"Dashboard"},
@@ -100,6 +108,17 @@ export default function Project(){
         else{
           updateProject({});
         }
+    }
+
+    async function deleteProject(){
+        if (window.confirm('The project will be permanently deleted. Are you sure?'))
+        {
+            const response = await fetch(`http://localhost:3001/api/project/${project["_id"]}`, {method: 'DELETE'});
+            if (response.status === 200) {
+                alert("The project has been permanently deleted");
+                navigate("/overview");
+            }
+        }        
     }
 
     useEffect(()=>{
@@ -140,6 +159,26 @@ export default function Project(){
         </List>
         <Divider />
         <List>
+            {
+              user.firstName+" "+user.lastName===project.manager.name &&
+              <>
+              <ListItem button onClick={deleteProject}> 
+                <ListItemIcon><DeleteOutline/></ListItemIcon>
+                <ListItemText primary={"Delete project"} />
+              </ListItem>
+              <ListItem button onClick={()=>setEdit(project)}> 
+                <ListItemIcon><Settings/></ListItemIcon>
+                <ListItemText primary={"Edit project"} />
+              </ListItem>
+              <ListItem button onClick={()=>setShare(project)}> 
+                <ListItemIcon><ShareIcon/></ListItemIcon>
+                <ListItemText primary={"Share project"} />
+              </ListItem>
+              </>
+            }
+        </List>
+        <Divider />
+        <List>
             <ListItem button onClick={()=>navigate("/")}> 
               <ListItemIcon><LogOutIcon/></ListItemIcon>
               <ListItemText primary={"Log out"} />
@@ -155,6 +194,8 @@ export default function Project(){
             4:<div>Analytics</div>
         }[tab]}
       </Main>
+      {edit!=="" && <EditProject edit={edit} setEdit={setEdit}/>}  
+      {share!=="" && <ShareProject share={share} setShare={setShare}/>}    
     </Box>
   );
 }

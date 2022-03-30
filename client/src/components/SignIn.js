@@ -18,7 +18,6 @@ export default function SignIn(){
     const {updateUserField}=bindActionCreators(actionCreators,dispatch);
 
     const [role, setRole] = React.useState('');
-    const [picture, setPicture] = React.useState('No picture uploaded');
     const [error, setError] = React.useState(false);
     const [password2, setPassword2] = React.useState("");
 
@@ -36,11 +35,11 @@ export default function SignIn(){
             body: JSON.stringify(user)
             });
             if (response.status === 200) {
-                alert("posted");
+                alert("The user has been registered. Now you can sign in.");
                 updateUserField("logged",true);
             }
             else{
-                alert("not posted");
+                alert("The was something wrong. Please try again");
             }
         }
     }
@@ -64,11 +63,6 @@ export default function SignIn(){
                     required 
                     sx={{m:1}}
                     onChange={(e)=>updateUserField("username",e.target.value)}/>
-                <TextField 
-                    label="GitHub username" 
-                    variant="outlined" 
-                    sx={{m:1}}
-                    onChange={(e)=>updateUserField("gitUsername",e.target.value)}/>
                 <TextField 
                     label="First name" 
                     variant="outlined" 

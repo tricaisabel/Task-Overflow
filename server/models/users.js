@@ -13,10 +13,6 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    gitUsername:{
-        type:String,
-        required:false
-    },
     job:{
         type:String,
         required:true

@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 
 export default function MembersAuto(props){
     let usernames=[];
+    console.log(usernames);
 
     async function getUsers(){
         const response = await fetch(`http://localhost:3001/api/users`);
@@ -21,7 +22,7 @@ export default function MembersAuto(props){
                 id="tags-outlined"
                 options={usernames}
                 getOptionLabel={(username) => username}
-                defaultValue={usernames[0]}
+                defaultValue={props.team}
                 filterSelectedOptions
                 renderInput={(params) => (
                 <TextField
