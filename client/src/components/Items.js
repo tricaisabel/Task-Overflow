@@ -49,8 +49,6 @@ export default function Items(){
               delete body.assignedTo;
               break;
       }
-      console.log(body);
-      console.log(view);
       const response = await fetch(`http://localhost:3001/api/existItems`, {
           method: 'POST',
           headers: {

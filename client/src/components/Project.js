@@ -28,7 +28,7 @@ import Dashboard from './Dashboard';
 import Items from './Items';
 import ShareProject from './ShareProject';
 import EditProject from './EditProject';
-
+import Analytics from './Analytics';
 
 const drawerWidth = 200;
 
@@ -191,7 +191,7 @@ export default function Project(){
             1:<Dashboard/>,
             2:<Items/>,
             3:<div>Timeline</div>,
-            4:<div>Analytics</div>
+            4:<Analytics/>
         }[tab]}
       </Main>
       {edit!=="" && <EditProject edit={edit} setEdit={setEdit}/>}  

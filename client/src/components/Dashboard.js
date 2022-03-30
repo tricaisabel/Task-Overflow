@@ -16,7 +16,6 @@ export default function Dashboard(){
 
     async function calcProjectProgress(){
       const body= { "projectId":project["_id"]};
-      console.log(body);
       const response = await fetch(`http://localhost:3001/api/existItems`, {
           method: 'POST',
           headers: {
