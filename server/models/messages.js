@@ -7,21 +7,17 @@ const MessageSchema=new mongoose.Schema({
     },
     content:{
         type:String,
-        required:true
+        required:false
     },
     sender:{
         type:String,
-        required:true
-    },
-    recipient:{
-        type:Array,
         required:true
     },
     time:{
         type:Date,
         required:true
     },
-    type:{
+    parentId:{
         type:String,
         required:true
     },

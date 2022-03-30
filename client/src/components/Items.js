@@ -16,22 +16,41 @@ import {useDispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
 import {useEffect} from 'react';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 
 export default function Items(){
     const [tab, setTab] = useState('1');
     const [open,setOpen]=useState(false);
     const [items,setItems]=useState([]);
-    let project=useSelector((state)=>state.project);
+    const project=useSelector((state)=>state.project);
+    const user=useSelector((state)=>state.user);
+    const [view,setView]=useState("all");
     const dispatch=useDispatch();
     const {addItems}=bindActionCreators(actionCreators,dispatch);
 
     useEffect(()=>{
         getItems();
-    },[]);
+    },[view]);
 
     async function getItems(){
-      const body= { "projectId":project["_id"]};
+      let body= { "projectId":project["_id"]};
+      // eslint-disable-next-line default-case
+      switch(view){
+          case "assigned":
+              body.assignedTo=user.firstName+" "+user.lastName;
+              break;
+          case "unassigned":
+              body.assignedTo="none";
+              break;
+          case "all":
+              delete body.assignedTo;
+              break;
+      }
       console.log(body);
+      console.log(view);
       const response = await fetch(`http://localhost:3001/api/existItems`, {
           method: 'POST',
           headers: {
@@ -75,11 +94,23 @@ export default function Items(){
         <Container maxWidth="100%" sx={{mx:"-24px"}}>
         <Card variant="outlined">
             <TabContext value={tab}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', display:"flex",direction:"row"}}>
                 <TabList onChange={(e,newTab)=>setTab(newTab)} aria-label="lab API tabs example">
                 <Tab label="List View" value="1" />
                 <Tab label="Kanban" value="2" />
                 </TabList>
+                <FormControl >
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={view}
+                    onChange={(e)=>{setView(e.target.value)}}
+                >
+                    <MenuItem value={"all"}>All items</MenuItem>
+                    <MenuItem value={"assigned"}>Assigned to me</MenuItem>
+                    <MenuItem value={"unassigned"}>Unassigned items</MenuItem>
+                </Select> 
+                </FormControl>        
             </Box>
             <TabPanel value="1" sx={{p:1}}>
                 <ItemList getItems={getItems} rows={items}/>

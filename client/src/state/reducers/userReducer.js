@@ -1,5 +1,5 @@
-let fields=["logged","id","username","gitUsername","firstName","lastName","password","job","role","color"];
-let initialState={"logged":false};
+let fields=["logged","id","username","gitUsername","firstName","lastName","password","job","role","color","tab"];
+let initialState={"logged":false,"tab":1};
 fields.forEach(field=>initialState[field]="");
 
 function changeState(state,field,value){

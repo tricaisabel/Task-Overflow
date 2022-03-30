@@ -24,7 +24,7 @@ import {useNavigate} from "react-router-dom";
 import Dashboard from './Dashboard';
 import Items from './Items';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -75,6 +75,7 @@ export default function Project(){
     const navigate = useNavigate();
     const {id}=useParams();
     let project=useSelector((state)=>state.project);
+    let user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
     const {updateProject}=bindActionCreators(actionCreators,dispatch);
     const [tab,setTab]=useState(1);
@@ -141,7 +142,7 @@ export default function Project(){
         <List>
             <ListItem button onClick={()=>navigate("/")}> 
               <ListItemIcon><LogOutIcon/></ListItemIcon>
-              <ListItemText primary={"Leave this project"} />
+              <ListItemText primary={"Log out"} />
             </ListItem>
         </List>
       </Drawer>

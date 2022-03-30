@@ -77,6 +77,16 @@ export default function AlignItemsList(props) {
         const availableTo=[item.assignedTo,item.openedBy,project.manager.name];
         return !availableTo.includes(user.firstName+" "+user.lastName);        
     }
+
+    async function deleteItem(item){
+        if (window.confirm('The item will be permanently deleted. Are you sure?'))
+        {
+            const response = await fetch(`http://localhost:3001/api/item/${item["_id"]}`, {method: 'DELETE'});
+            if (response.status === 200) {
+                props.getItems();
+            }
+        }        
+    }
     
   return (
     <Stack
@@ -91,7 +101,7 @@ export default function AlignItemsList(props) {
             <List sx={{ 
                 bgcolor: 'background.paper', 
                 overflow: 'auto',
-                maxHeight: 300,
+                maxHeight: "440px",
                 '& ul': { padding: 0 },}}>
             {
             items.map((item,j)=>
@@ -99,8 +109,7 @@ export default function AlignItemsList(props) {
             <div key={j}>
                 <ListItemButton 
                     onClick={(e)=>{setOpen(true); setSelected(item)}}
-                    alignItems="flex-start" 
-                    disabled={getRights(item)}>
+                    alignItems="flex-start">
                     <ListItemAvatar>
                         {
                             {
@@ -124,7 +133,7 @@ export default function AlignItemsList(props) {
                         <Stack direction="row" alignItems="center">
                         {daysDifference(item)<=3 && <ReportGmailerrorred sx={{color:getDateColor(item)}}/>}
                         <Typography variant="caption">
-                            Deadline: {item.deadline.slice(0,16).replace("T","\t")} ({daysDifference(item)>=0?daysDifference(item):0} days left)
+                            Deadline: {item.deadline.slice(0,16).replace("T","\t")} ({daysDifference(item)>=0?daysDifference(item)+" days left":daysDifference(item)*(-1)+" days ago"})
                         </Typography>   
                         </Stack>                     
                     </Stack>
@@ -172,7 +181,7 @@ export default function AlignItemsList(props) {
                             variant="outlined"
                             size="small"
                             color="error"
-                            onClick={(e)=>{e.stopPropagation(); assignYourself(item)}}
+                            onClick={(e)=>{e.stopPropagation(); deleteItem(item)}}
                             aria-label="move selected left"
                         >
                             delete

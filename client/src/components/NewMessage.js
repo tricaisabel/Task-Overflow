@@ -1,22 +1,22 @@
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import {useSelector} from 'react-redux';
-import MembersAuto from './MembersAuto';
 import { Button } from '@mui/material';
 import { Stack } from '@mui/material';
+import Add from '@mui/icons-material/Add';
+
 
 export default function NewMessage(props){
     let user=useSelector((state)=>state.user);
     const date=new Date().toISOString();
-    const [recipients,setRecipients]=useState([]);
+    const [open,setOpen]=useState(false);
     const [message,setMessage]=useState({
         title:"",
         content:"",
         sender:user.firstName+" "+user.lastName,
-        recipient:"",
         time:date.slice(0,date.indexOf("T")),
-        type:props.type,
-        color:user.color
+        color:user.color,
+        parentId:props.parent
     });
 
     function changeState(field,value){
@@ -26,7 +26,6 @@ export default function NewMessage(props){
     }
 
     async function handleSubmit(){
-        message.recipient=["all"];
         const response = await fetch(`http://localhost:3001/api/messages`, {
         method: 'POST',
         headers: {
@@ -35,40 +34,43 @@ export default function NewMessage(props){
         body: JSON.stringify(message)
         });
         if (response.status === 200) {
-            alert("The new message was successfully sent");
-            changeState("title","");
-            changeState("content","");
-
             props.getMessages();
         }
         else{
+            console.log(message);
             alert("Unfortunately something went wrong. Try again.");
         }
     }
 
     return(
         <>
-        <Stack spacing={2} width="0.8">
-            {/* <MembersAuto setValue={setRecipients} title="Send to:"/> */}
+        <Button 
+            style={{maxWidth:"150px"}}
+             startIcon={<Add />} 
+            onClick={()=>setOpen(!open)}>
+            New {props.type}
+        </Button>
+        {open &&
+        <Stack spacing={2} width="1">
             <TextField 
                 label="Title" 
-                variant="outlined" 
-                required
+                variant="outlined"
                 rows={4}
                 width="100%"
                 value={message.title}
                 onChange={(e) =>changeState("title",e.target.value)}/>
             <TextField 
-                label="Message" 
-                variant="outlined" 
-                required 
+                label={props.type}
+                variant="outlined"
                 multiline 
                 rows={4}
                 width="100%"
                 value={message.content}
                 onChange={(e) =>changeState("content",e.target.value)}/>
-            <Button onClick={handleSubmit} variant="contained">Submit</Button>
+            <Button style={{maxWidth:"150px"}} onClick={handleSubmit} variant="contained">Send {props.type}</Button>
+
         </Stack>
+        }
         </>
     );
 }

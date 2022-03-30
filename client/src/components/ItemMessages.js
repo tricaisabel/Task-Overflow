@@ -9,13 +9,12 @@ import {useSelector} from 'react-redux';
 import { Stack } from '@mui/material';
 import NewMessage from './NewMessage';
 
-export default function AlignItemsList() {
+export default function ItemMessages(props) {
     const [messages,setMessages]=React.useState([]);
     let project=useSelector((state)=>state.project);
-    let user=useSelector((state)=>state.user);
 
     async function getMessages(){
-      const body= { "parentId":project["_id"],"sender":project.manager.name};
+      const body= { "parentId":props.itemId};
       const response = await fetch(`http://localhost:3001/api/existMessage`, {
           method: 'POST',
           headers: {
@@ -26,7 +25,6 @@ export default function AlignItemsList() {
       if (response.status === 200) {
           const data=await response.json();
           setMessages(data.reverse());
-          console.log(messages)
       } 
       else{
           setMessages([]);
@@ -45,7 +43,7 @@ export default function AlignItemsList() {
     
   return (
     <Stack>
-      <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Project Updates</Typography>
+      <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Messages</Typography>
       <List sx={{ 
         width: '1',
          bgcolor: 'background.paper', 
@@ -86,13 +84,10 @@ export default function AlignItemsList() {
       )}
       {
         messages.length===0 && 
-        <Typography variant="body2">Currently, there are no updates</Typography>
+        <Typography variant="body2">Currently, there are no messages for this item</Typography>
       }
-      </List>
-      {
-        user.firstName+" "+user.lastName===project.manager.name && 
-          <NewMessage parent={project["_id"]} getMessages={getMessages} type="Update"/>
-        }
+      </List>        
+          <NewMessage parent={props.itemId} getMessages={getMessages} type="Message"/>
     </Stack>
     
   );

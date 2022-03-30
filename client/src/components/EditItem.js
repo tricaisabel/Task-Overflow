@@ -14,6 +14,7 @@ import {useSelector} from 'react-redux';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import ItemMessages from './ItemMessages';
 
 export default function CreateProject(props) {
     
@@ -122,6 +123,7 @@ export default function CreateProject(props) {
                 )}
                 <MenuItem value={"none"}>None</MenuItem>
             </Select>
+            <ItemMessages itemId={props.item["_id"]}/>
         </Stack>
         
     </DialogContent>
