@@ -11,10 +11,13 @@ import {useSelector, useDispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
 import { useLocation } from 'react-router-dom';
+import {useState} from 'react';
+import EditProfile from './EditProfile';
 
 
 const ResponsiveAppBar = () => {
-  let user=useSelector((state)=>state.user);
+  const user=useSelector((state)=>state.user);
+  const [edit,setEdit]=useState(false);
   const dispatch=useDispatch();
   const {updateUserField}=bindActionCreators(actionCreators,dispatch);
 
@@ -66,7 +69,7 @@ const ResponsiveAppBar = () => {
               <MenuItem onClick={()=>navigate("/overview")}>
                   <Typography textAlign="center">Your Projects</Typography>
               </MenuItem>
-              <MenuItem >
+              <MenuItem onClick={()=>setEdit(true)}>
                   <Typography textAlign="center">Profile</Typography>
               </MenuItem>
               <MenuItem onClick={logOut}>
@@ -87,6 +90,7 @@ const ResponsiveAppBar = () => {
           }
         </Toolbar>
       </Container>
+      <EditProfile edit={edit} setEdit={setEdit}/>
     </AppBar>
   );
 };

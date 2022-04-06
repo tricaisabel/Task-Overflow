@@ -1,12 +1,13 @@
 import * as d3 from 'd3';
 import {useEffect} from 'react';
 import { Stack, Typography } from '@mui/material';
-import FiberManualRecord from '@mui/icons-material/FiberManualRecord'
+import './App.css';
 
 export default function PieChart(props){
     const keys=props.countsByType.map(each=>each.type);
     function drawChart(){
         const svg=d3.select('#pieChart');
+        svg.selectAll("*").remove();
         // Creating Pie generator
         var pie = d3.pie();
   
@@ -30,15 +31,28 @@ export default function PieChart(props){
                 let value=item.data;
                 return props.colorScheme[i];
             })
-            .attr("d", arc);
-          
+            .attr("d", arc)
+            .on('mouseover', function (d, i) {
+                d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '.85')
+                    .append("title")
+                    .text((d) => d);
+            })
+            .on('mouseout', function (d, i) {
+                d3.select(this).transition()
+                    .duration('50')
+                    .attr('opacity', '1');
+                //Makes the new div disappear:
+            });
         // Adding data to each arc
         arcs.append("text")
             .attr("transform",(item)=>{ 
                     return `translate(${arc.centroid(item)})`; 
             })
             .text(function(item,i){
-               return item.data; 
+                if(item.data!==0)
+                    return item.data; 
                });
     }
 
@@ -52,7 +66,7 @@ export default function PieChart(props){
         <Stack width="0.5" direction="row" alignContent="center">
             <Stack>
             {
-                props.countsByType.map((each,i)=><Typography key={i} color={props.colorScheme[i]}>{each.type}s</Typography>)
+                props.countsByType.map((each,i)=><Typography key={i} color={props.colorScheme[i]}>{each.type}s: {each.count}</Typography>)
             }
             </Stack>
             <svg id="pieChart" width="300px" height="300px"></svg>

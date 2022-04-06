@@ -6,3 +6,7 @@ body {
 ul{
     list-style: none;
 }
+
+.slice:hover{
+    color:red !important;
+}

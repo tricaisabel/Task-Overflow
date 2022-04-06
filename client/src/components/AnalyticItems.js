@@ -61,11 +61,10 @@ export default function AnalyticItems(props){
             label="Chart Type"
             onChange={(event)=>setOption(event.target.value)}
             >
-            <MenuItem value={"Items by type"}>Items by type</MenuItem>
-            <MenuItem value={"Items by risk"}>Items by risk</MenuItem>
+                <MenuItem value={"Items by type"}>Items by type</MenuItem>
+                <MenuItem value={"Items by risk"}>Items by risk</MenuItem>
             </Select>
         </FormControl>
-        {/* <PieChart countsByType={getCountsByType()} colorScheme={props.colorScheme} title="Items by type"/> */}
         <PieChart countsByType={option==="Items by type"?getCountsByType():getCountByRisk()} colorScheme={props.colorScheme} title={option}/>
         </Stack>
 

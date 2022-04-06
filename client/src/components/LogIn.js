@@ -32,6 +32,7 @@ export default function LogIn(){
             Object.keys(userData[0]).forEach((key)=>{
                 updateUserField(key,userData[0][key]);
             })
+            console.log(user);
             navigate("/overview");
         }
         else{
