@@ -8,22 +8,26 @@ export default function PieChart(props){
     function drawChart(){
         const svg=d3.select('#pieChart');
         svg.selectAll("*").remove();
+
+        const initial=0;
+        const total=props.data.reduce((prev,curr)=>prev+curr.count,initial);
+        console.log(total);
         // Creating Pie generator
         var pie = d3.pie();
   
         // Creating arc
         var arc = d3.arc()
-                    .innerRadius(0)
-                    .outerRadius(200);
+            .innerRadius(0)
+            .outerRadius(200);
   
         let g = svg.append("g")
-                   .attr("transform", `translate(250,200)`);
+            .attr("transform", `translate(250,200)`);
   
         // Grouping different arcs
         var arcs = g.selectAll("arc")
-                    .data(pie(props.data.map(each=>each.count)))
-                    .enter()
-                    .append("g");
+            .data(pie(props.data.map(each=>each.count)))
+            .enter()
+            .append("g");
   
         // Appending path 
         arcs.append("path")
@@ -31,18 +35,9 @@ export default function PieChart(props){
                 return props.colorScheme[i];
             })
             .attr("d", arc)
-            .on('mouseover', function (d, i) {
-                d3.select(this).transition()
-                    .duration('50')
-                    .attr('opacity', '.85')
-                    .append("title")
-                    .text((d) => d);
-            })
-            .on('mouseout', function (d, i) {
-                d3.select(this).transition()
-                    .duration('50')
-                    .attr('opacity', '1');
-            });
+            .append("title")
+            .text((d) =>Math.round(d.value/total*100)+"%");
+
         // Adding data to each arc
         arcs.append("text")
             .attr("transform",(item)=>{ 
@@ -52,6 +47,7 @@ export default function PieChart(props){
                 if(item.data!==0)
                     return item.data; 
                });
+            
     }
 
     useEffect(()=>{
