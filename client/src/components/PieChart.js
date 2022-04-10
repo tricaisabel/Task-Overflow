@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import {useEffect} from 'react';
 import { Stack, Typography } from '@mui/material';
+import Stop from '@mui/icons-material/Stop';
 import './App.css';
 
 export default function PieChart(props){
@@ -20,7 +21,7 @@ export default function PieChart(props){
   
         // Grouping different arcs
         var arcs = g.selectAll("arc")
-                    .data(pie(props.countsByType.map(each=>each.count)))
+                    .data(pie(props.data.map(each=>each.count)))
                     .enter()
                     .append("g");
   
@@ -41,7 +42,6 @@ export default function PieChart(props){
                 d3.select(this).transition()
                     .duration('50')
                     .attr('opacity', '1');
-                //Makes the new div disappear:
             });
         // Adding data to each arc
         arcs.append("text")
@@ -62,13 +62,18 @@ export default function PieChart(props){
     return(
         <>
         <Typography variant="h5">{props.title}</Typography>
-        <Stack width="0.5" direction="row" alignContent="center">
-            <Stack>
+        <Stack width="1" direction="row" alignContent="center">
+            <svg id="pieChart" width="100vh" height="500px"></svg>
+            <Stack width="0.5">
             {
-                props.countsByType.map((each,i)=><Typography key={i} color={props.colorScheme[i]}>{each.type}s: {each.count}</Typography>)
+                props.data.map((each,i)=>
+                    <Stack direction="row" key={i}>
+                        <Stop sx={{color:props.colorScheme[i]}}/>
+                        <Typography variant="body1">{each.type}</Typography>
+                    </Stack>
+                )
             }
             </Stack>
-            <svg id="pieChart" width="70vh" height="500px"></svg>
         </Stack>
         </>
     );
