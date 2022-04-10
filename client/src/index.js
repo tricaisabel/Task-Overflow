@@ -7,6 +7,7 @@ import store,{persistor} from './state/store';
 import {PersistGate} from 'redux-persist/integration/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Project from './components/Project';
+import BarChart from './components/BarChart';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -14,6 +15,7 @@ ReactDOM.render(
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<Auth/>} />
+          <Route exact path="/bar" element={<BarChart/>} />
           <Route exact path="/overview" element={<Overview/>} />
           <Route exact path="/project/:id" element={<Project/>} />
         </Routes>  

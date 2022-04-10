@@ -4,7 +4,6 @@ import { Stack, Typography } from '@mui/material';
 import './App.css';
 
 export default function PieChart(props){
-    const keys=props.countsByType.map(each=>each.type);
     function drawChart(){
         const svg=d3.select('#pieChart');
         svg.selectAll("*").remove();
@@ -14,10 +13,10 @@ export default function PieChart(props){
         // Creating arc
         var arc = d3.arc()
                     .innerRadius(0)
-                    .outerRadius(100);
+                    .outerRadius(200);
   
         let g = svg.append("g")
-                   .attr("transform", `translate(150,100)`);
+                   .attr("transform", `translate(250,200)`);
   
         // Grouping different arcs
         var arcs = g.selectAll("arc")
@@ -28,7 +27,6 @@ export default function PieChart(props){
         // Appending path 
         arcs.append("path")
             .attr("fill", (item,i)=>{
-                let value=item.data;
                 return props.colorScheme[i];
             })
             .attr("d", arc)
@@ -58,6 +56,7 @@ export default function PieChart(props){
 
     useEffect(()=>{
         drawChart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[props.title]);
 
     return(
@@ -69,7 +68,7 @@ export default function PieChart(props){
                 props.countsByType.map((each,i)=><Typography key={i} color={props.colorScheme[i]}>{each.type}s: {each.count}</Typography>)
             }
             </Stack>
-            <svg id="pieChart" width="300px" height="300px"></svg>
+            <svg id="pieChart" width="70vh" height="500px"></svg>
         </Stack>
         </>
     );

@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useState } from "react";
+import BarChart from "./BarChart";
 
 export default function AnalyticItems(props){
     const items=useSelector((state)=>state.items);
@@ -62,10 +63,18 @@ export default function AnalyticItems(props){
             onChange={(event)=>setOption(event.target.value)}
             >
                 <MenuItem value={"Items by type"}>Items by type</MenuItem>
-                <MenuItem value={"Items by risk"}>Items by risk</MenuItem>
+                <MenuItem value={"Items by deadline"}>Items by deadline</MenuItem>
+                <MenuItem value={"Items assigned for each member"}>Items assigned for each member</MenuItem>
             </Select>
         </FormControl>
-        <PieChart countsByType={option==="Items by type"?getCountsByType():getCountByRisk()} colorScheme={props.colorScheme} title={option}/>
+        {
+            {
+                "Items by type":<PieChart countsByType={getCountsByType()} colorScheme={props.colorScheme} title={option}/>,
+                "Items by deadline":<PieChart countsByType={getCountsByType()} colorScheme={props.colorScheme} title={option}/>,
+                "Items assigned for each member":<BarChart colorScheme={props.colorScheme} title={option}/>
+            }[option]
+        }
+        
         </Stack>
 
     );
