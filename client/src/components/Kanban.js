@@ -55,21 +55,21 @@ export default function AlignItemsList(props) {
         }
     }
 
-    function daysDifference(item) {
-        const time_diff = new Date(item.deadline).getTime() - new Date().getTime();
+    function daysDifference(date) {
+        const time_diff = new Date(date).getTime() - new Date().getTime();
         const days_diff = time_diff / (1000 * 3600 * 24);
         return Math.round(days_diff);
     }
     
-    const getDateColor=(item)=>{
-        const difference=daysDifference(item);
+    const getDateColor=(date)=>{
+        const difference=daysDifference(date);
         switch(true){
             case difference>0 && difference <=3:
                 return "#ff9800";
             case difference<=0:
                 return "#f44336";
             default:
-                return "black";
+                return "green";
         }
     }
 
@@ -124,18 +124,27 @@ export default function AlignItemsList(props) {
                         primary={item.name}
                         secondary={
                             <React.Fragment>
-                            {item.description.slice(0,100)+"..."}
+                            {item.description.slice(0,80)+"..."}
                             </React.Fragment>
                         }
                         />
                         <Typography variant="caption"> Opened by: {item.openedBy}</Typography>
-                        <Typography variant="caption"> Assigned to: {item.assignedTo===user.firstName+" "+user.lastName? "You":item.assignedTo}</Typography>
+                        <Typography variant="caption"> Assigned to: {item.assignedTo.includes(user.firstName+" "+user.lastName)? "You":item.assignedTo.join(",")}</Typography>
+                        
                         <Stack direction="row" alignItems="center">
-                        {daysDifference(item)<=3 && <ReportGmailerrorred sx={{color:getDateColor(item)}}/>}
                         <Typography variant="caption">
-                            Deadline: {item.deadline.slice(0,16).replace("T","\t")} ({daysDifference(item)>=0?daysDifference(item)+" days left":daysDifference(item)*(-1)+" days ago"})
+                            Start date: {item.startDate} ({daysDifference(item.startDate)>=0?daysDifference(item.startDate)+" days left":daysDifference(item.startDate)*(-1)+" days ago"})
+                        </Typography>        
+                        </Stack>
+
+                        <Stack direction="row" alignItems="center">
+                        {daysDifference(item.endDate)<=3 && <ReportGmailerrorred sx={{color:getDateColor(item.endDate)}}/>}
+                        <Typography variant="caption">
+                            End date: {item.endDate} ({daysDifference(item.endDate)>=0?daysDifference(item.endDate)+" days left":daysDifference(item.endDate)*(-1)+" days ago"})
                         </Typography>   
-                        </Stack>                     
+                        </Stack>
+                        
+                                        
                     </Stack>
                     <Stack>
                     {    

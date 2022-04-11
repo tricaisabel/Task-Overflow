@@ -8,13 +8,12 @@ import Add from '@mui/icons-material/Add';
 
 export default function NewMessage(props){
     let user=useSelector((state)=>state.user);
-    const date=new Date().toISOString();
     const [open,setOpen]=useState(false);
     const [message,setMessage]=useState({
         title:"",
         content:"",
         sender:user.firstName+" "+user.lastName,
-        time:date.slice(0,date.indexOf("T")),
+        time:new Date(),
         color:user.color,
         parentId:props.parent
     });
@@ -35,9 +34,10 @@ export default function NewMessage(props){
         });
         if (response.status === 200) {
             props.getMessages();
+            changeState("title","");
+            changeState("content","");
         }
         else{
-            console.log(message);
             alert("Unfortunately something went wrong. Try again.");
         }
     }

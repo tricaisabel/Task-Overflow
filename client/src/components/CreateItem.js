@@ -15,28 +15,32 @@ import {useSelector} from 'react-redux';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import MembersAuto from './MembersAuto';
 
 export default function CreateProject(props) {
     
     const project=useSelector((state)=>state.project);
     const user=useSelector((state)=>state.user);
-    const [assign,setAssign]=React.useState("none");
+    const [team,setTeam]=React.useState(["none"]);
     const [type,setType]=React.useState("task");
     const [name,setName]=React.useState("");
     const [desc,setDesc]=React.useState("");
-    const [deadline,setDeadline]=React.useState(new Date());
+    const [startDate,setStartDate]=React.useState(new Date());
+    const [endDate,setEndDate]=React.useState(new Date());
 
     async function addItem(){
         const newItem={
             name:name,
             description:desc,
             type:type,
-            assignedTo:assign,
+            assignedTo:team,
             openedBy:user.firstName+" "+user.lastName,
             progress:0,
-            deadline:deadline,
+            startDate:startDate,
+            endDate:endDate,
             projectId:project["_id"]
         };
+        console.log(newItem);
         const response = await fetch(`http://localhost:3001/api/items`, {
         method: 'POST',
         headers: {
@@ -44,10 +48,7 @@ export default function CreateProject(props) {
         },
         body: JSON.stringify(newItem)
         });
-        if (response.status === 200) {
-            alert("The new item was successfully added");
-        }
-        else{
+        if (response.status !== 200) {
             alert("Unfortunately something went wrong. Try again.");
         }
     }
@@ -94,32 +95,31 @@ export default function CreateProject(props) {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                 renderInput={(params) => <TextField {...params} />}
-                label="Item deadline"
-                value={deadline}
+                label="Start date"
+                value={startDate}
                 onChange={(newValue) => {
-                    setDeadline(newValue);
+                    setStartDate(newValue);
                 }}
                 minDateTime={new Date()}
+                />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                renderInput={(params) => <TextField {...params} />}
+                label="End date"
+                value={endDate}
+                onChange={(newValue) => {
+                    setEndDate(newValue);
+                }}
+                minDateTime={startDate}
                 />
             </LocalizationProvider>
             
             <DialogTitle>Assign the item (optional)</DialogTitle>
             <DialogContentText>
-                This is the person that will have to complete the work item. You can leave this unassigned and assign it later, or you can assign it right now.
+                This is the person/team that will complete the work item. You can leave this unassigned and assign it later, or you can assign it right now.
             </DialogContentText>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={assign}
-                label="Assign item"
-                onChange={(e)=>setAssign(e.target.value)}
-            >
-                {
-                    project.team.map((member,index)=>
-                    <MenuItem value={member} key={index}>{member}</MenuItem>
-                )}
-                <MenuItem value={"none"}>None</MenuItem>
-            </Select>
+            <MembersAuto setValue={setTeam} multiple={true} title={"Assign a team"}/>
         </Stack>
         
     </DialogContent>

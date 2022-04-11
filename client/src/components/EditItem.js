@@ -15,16 +15,18 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import ItemMessages from './ItemMessages';
+import MembersAuto from './MembersAuto';
 
 export default function CreateProject(props) {
     
     const project=useSelector((state)=>state.project);
     const user=useSelector((state)=>state.user);
-    const [assign,setAssign]=React.useState(props.item.assignedTo);
+    const [team,setTeam]=React.useState(props.item.assignedTo);
     const [type,setType]=React.useState(props.item.type);
     const [name,setName]=React.useState(props.item.name);
     const [desc,setDesc]=React.useState(props.item.description);
-    const [deadline,setDeadline]=React.useState(props.item.deadline);
+    const [startDate,setStartDate]=React.useState(props.item.startDate);
+    const [endDate,setEndDate]=React.useState(props.item.endDate);
     const [disabled]=React.useState(user.firstName+" "+user.lastName!==props.item.openedBy);
 
     async function addItem(){
@@ -32,10 +34,11 @@ export default function CreateProject(props) {
             name:name,
             description:desc,
             type:type,
-            assignedTo:assign,
+            assignedTo:team,
             openedBy:user.firstName+" "+user.lastName,
             progress:0,
-            deadline:deadline,
+            startDate:startDate,
+            endDate:endDate,
             projectId:project["_id"]
         };
         const response = await fetch(`http://localhost:3001/api/item/${props.item["_id"]}`, {
@@ -69,7 +72,9 @@ export default function CreateProject(props) {
                 label="Item name" 
                 variant="outlined" 
                 required 
-                disabled={disabled}
+                InputProps={{
+                    readOnly: disabled,
+                }}
                 defaultValue={props.item.name}
                 onChange={(e) =>setName(e.target.value)}/>
             <TextField 
@@ -78,7 +83,9 @@ export default function CreateProject(props) {
                 required 
                 multiline 
                 rows={4}
-                disabled={disabled}
+                 InputProps={{
+                    readOnly: disabled,
+                }}
                 defaultValue={props.item.description}
                 onChange={(e) =>setDesc(e.target.value)}/>
             <FormControl fullWidth>
@@ -88,7 +95,9 @@ export default function CreateProject(props) {
                     id="demo-simple-select"
                     value={type}
                     label="Item type"
-                    disabled={disabled}
+                     InputProps={{
+                        readOnly: disabled,
+                    }}
                     defaultValue={props.item.type}
                     onChange={(e)=>setType(e.target.value)}
                 >
@@ -100,29 +109,28 @@ export default function CreateProject(props) {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                 renderInput={(params) => <TextField {...params} />}
-                label="Item deadline"
-                value={deadline}
-                disabled={disabled}
+                label="Start date"
+                value={startDate}
+                readOnly={disabled}
                 onChange={(newValue) => {
-                    setDeadline(newValue);
+                    setStartDate(newValue);
                 }}
                 minDateTime={new Date()}
+                />            
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                renderInput={(params) => <TextField {...params} />}
+                label="End date"
+                value={endDate}
+                readOnly={disabled}
+                onChange={(newValue) => {
+                    setEndDate(newValue);
+                }}
+                minDateTime={startDate}
                 />
             </LocalizationProvider>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={assign}
-                label="Assigned to"
-                disabled={disabled}
-                onChange={(e)=>setAssign(e.target.value)}
-            >
-                {
-                    project.team.map((member,index)=>
-                    <MenuItem value={member} key={index}>{member}</MenuItem>
-                )}
-                <MenuItem value={"none"}>None</MenuItem>
-            </Select>
+            <MembersAuto disabled={disabled} setValue={setTeam} multiple={true} title={"Assign a team"} team={props.item.assignedTo}/>
             <ItemMessages itemId={props.item["_id"]}/>
         </Stack>
         

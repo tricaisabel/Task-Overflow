@@ -24,8 +24,8 @@ export default function AnalyticItems(props){
         return countsByType;
     }
     
-    function daysDifference(item) {
-        const time_diff = new Date(item.deadline).getTime() - new Date().getTime();
+    function daysDifference(date) {
+        const time_diff = new Date(date).getTime() - new Date().getTime();
         const days_diff = time_diff / (1000 * 3600 * 24);
         return Math.round(days_diff);
     }
@@ -37,7 +37,7 @@ export default function AnalyticItems(props){
             {type:"Overdue Item",count:0}
         ];
         items.map(item=>{
-            const difference=daysDifference(item);
+            const difference=daysDifference(item.endDate);
             if(difference>3)
                 countsByDeadline[0].count++;
             else if (difference<=3 && difference>0)
@@ -52,24 +52,28 @@ export default function AnalyticItems(props){
         let result=[];
         let members=[];
         items.forEach(item=>{
-            if(!members.includes(item.assignedTo)){
-                members.push(item.assignedTo);
-                let assign={group:item.assignedTo,task:0,bug:0,issue:0};
-                assign[item.type]=1;
-                result.push(assign);
-            }
-            else{
-                result.forEach(a=>{
-                    if(a.group===item.assignedTo)
-                        a[item.type]++;
-                })
-            }
+            item.assignedTo.forEach(member=>{
+                if(!members.includes(member)){
+                    members.push(member);
+                    let assign={group:member,task:0,bug:0,issue:0};
+                    assign[item.type]=1;
+                    result.push(assign);
+                }
+                else{
+                    result.forEach(each=>{
+                        if(each.group===member)
+                            each[item.type]++;
+                    })
+                }
+            });
+            
         });
-        result.forEach(a=>{
-            a.task=a.task.toString();
-            a.issue=a.issue.toString();
-            a.bug=a.bug.toString();
+        result.forEach(each=>{
+            each.task=each.task.toString();
+            each.issue=each.issue.toString();
+            each.bug=each.bug.toString();
         })
+        console.log(result);
         return result;
     }
 
@@ -85,7 +89,7 @@ export default function AnalyticItems(props){
             }
             else{
                 result.forEach(a=>{
-                    if(a.group===item.assignedTo)
+                    if(item.openedBy===a.group)
                         a[item.type]++;
                 })
             }

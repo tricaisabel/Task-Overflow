@@ -37,7 +37,6 @@ export default function Items(){
 
     async function getItems(){
       let body= { "projectId":project["_id"]};
-      // eslint-disable-next-line default-case
       switch(view){
           case "assigned":
               body.assignedTo=user.firstName+" "+user.lastName;
@@ -45,7 +44,7 @@ export default function Items(){
           case "unassigned":
               body.assignedTo="none";
               break;
-          case "all":
+          default:
               delete body.assignedTo;
               break;
       }
@@ -61,10 +60,9 @@ export default function Items(){
             let rows=data;
             rows.forEach((item)=>{
                 delete item["__v"];
-                delete item.timing;
-                delete item.projectId;
-                delete item.dependencies;
-            })  
+                item.startDate=item.startDate.slice(0,16).replace("T","\t");
+                item.endDate=item.endDate.slice(0,16).replace("T","\t");
+            }) 
             addItems(rows);
             setItems(rows);    
       }

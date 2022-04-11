@@ -14,7 +14,7 @@ const ItemSchema=new mongoose.Schema({
         required:true
     },
     assignedTo:{
-        type:String,
+        type:Array,
         required:true
     },
     openedBy:{
@@ -25,7 +25,11 @@ const ItemSchema=new mongoose.Schema({
         type:Number,
         required:true
     },
-    deadline:{
+    startDate:{
+        type:Date,
+        required:true
+    },
+    endDate:{
         type:Date,
         required:true
     },

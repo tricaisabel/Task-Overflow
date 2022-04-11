@@ -3,13 +3,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import EditItem from './EditItem';
 
 const columns = [
-  { field: 'type', headerName: 'Type', width: 130 },
-  { field: 'name', headerName: 'Name', width: 130 },
-  { field: 'description', headerName: 'Description', width: 500 },
-  { field: 'openedBy', headerName: 'Opened By',width: 150,},
-  { field: 'assignedTo', headerName: 'Assigned To',width: 150,},
-  { field: 'progress', headerName: 'Progress',width: 100, type:'number'},
-  { field: 'deadline', headerName: 'Deadline',width: 150}
+  { field: 'type', headerName: 'Type',width:"70"},
+  { field: 'name', headerName: 'Name',width:"200"},
+  { field: 'description', headerName: 'Description',width:"300"},
+  { field: 'openedBy', headerName: 'Opened By'},
+  { field: 'assignedTo', headerName: 'Assigned To',width:"200"},
+  { field: 'progress', headerName: 'Progress', type:'number'},
+  { field: 'startDate', headerName: 'Start Date',width:"200"},
+  { field: 'endDate', headerName: 'End Date',width:"200"}
 ];
 
 

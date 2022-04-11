@@ -85,9 +85,9 @@ export default function BarChart(props){
     return(
          <>
         <Typography variant="h5">{props.title}</Typography>
-        <Stack width="0.8" direction="row" alignContent="center">
+        <Stack width="1" direction="row" alignContent="center">
             <svg id="barChart" width="80vh" height="500px"></svg>
-            <Stack width="0.5">
+            <Stack width="0.3">
             {
                 ["Tasks","Bugs","Issues"].map((each,i)=>
                     <Stack direction="row" key={i}>

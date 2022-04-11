@@ -158,11 +158,11 @@ export default function Project(){
             </ListItem>)
             }            
         </List>
-        <Divider />
         <List>
             {
               user.firstName+" "+user.lastName===project.manager.name &&
               <>
+              <Divider />
               <ListItem button onClick={deleteProject}> 
                 <ListItemIcon><DeleteOutline/></ListItemIcon>
                 <ListItemText primary={"Delete project"} />
