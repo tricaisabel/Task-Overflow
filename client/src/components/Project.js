@@ -29,6 +29,7 @@ import Items from './Items';
 import ShareProject from './ShareProject';
 import EditProject from './EditProject';
 import Analytics from './Analytics';
+import Timeline from "./Timeline";
 
 const drawerWidth = 200;
 
@@ -190,7 +191,7 @@ export default function Project(){
         {{
             1:<Dashboard/>,
             2:<Items/>,
-            3:<div>Timeline</div>,
+            3:<Timeline/>,
             4:<Analytics/>
         }[tab]}
       </Main>
