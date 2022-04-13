@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,17 +9,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Stack } from '@mui/material';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import enLocale from 'date-fns/locale/en-US';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import {useSelector} from 'react-redux';
 import MembersAuto from './MembersAuto';
 
 export default function CreateProject(props) {
     
     let user=useSelector((state)=>state.user);
-    const [team, setTeam]=React.useState([]);
-    const [date,setDate]=React.useState("");
-    const [project, setProject] = React.useState({
+    const [team, setTeam]=useState([]);
+    const [date,setDate]=useState(new Date());
+    const [project, setProject] = useState({
         name:"",
         description:"",
         password:"",
@@ -33,8 +32,10 @@ export default function CreateProject(props) {
         }
     });
 
+    const [error,setError]=useState(false);
+
     async function addProject(){
-        if(project.password===project.password2)
+        if(error===false)
         {
             delete project.password2;
             team.push(user.firstName+" "+user.lastName);
@@ -56,7 +57,7 @@ export default function CreateProject(props) {
             }
         }
         else{
-            alert("The 2 project passwords are not the same");
+            alert("The 2 project passwords must match.");
         }
     }
     
@@ -95,13 +96,25 @@ export default function CreateProject(props) {
                 variant="outlined" 
                 required 
                 type="password"
-                onChange={(e) =>changeState("password",e.target.value)}/>
+                error={error}
+                helperText="Passwords must match"
+                onChange={(e) =>{
+                            changeState("password",e.target.value);
+                            setError(project.password2!==e.target.value);
+                        }
+                    }/>
             <TextField 
                 label="Repeat Password" 
                 variant="outlined" 
                 required 
                 type="password"
-                onChange={(e) =>changeState("password2",e.target.value)}/>
+                error={error}
+                helperText="Passwords must match"
+                onChange={(e) =>{
+                            changeState("password2",e.target.value);
+                            setError(project.password!==e.target.value);
+                        }
+                    }/>
             <TextField 
                 label="Enter a suggestive description for your new project" 
                 variant="outlined" 
@@ -109,20 +122,20 @@ export default function CreateProject(props) {
                 multiline 
                 rows={4}
                 onChange={(e) =>changeState("description",e.target.value)}/>
-            <LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
-                 <DatePicker
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                 <DateTimePicker
                     label="Project deadline"
-                    mask={'__/__/____'}
                     value={date}
                     onChange={handleDate}
                     renderInput={(params) => <TextField {...params} />}
+                    minDateTime={new Date()}
                     />
             </LocalizationProvider>
-            <DialogTitle>Team</DialogTitle>
+            <DialogTitle>Project participants</DialogTitle>
             <DialogContentText>
-                Add your team members manually from the autocomplete list below (they must already have an account). You can always add more members manually or you can share the project info and they can join your project.
+                Add your project participants manually from the autocomplete list below (they must already have an account). You can later add more members manually or you can share the project info and they can join your project.
             </DialogContentText>
-            <MembersAuto setValue={setTeam} multiple={true}/>
+            <MembersAuto setValue={setTeam} multiple={true} title={"Project participants"}/>
         </Stack>
         
     </DialogContent>

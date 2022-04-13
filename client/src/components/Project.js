@@ -104,7 +104,7 @@ export default function Project(){
             Object.keys(data).forEach(key=>{
               newProject[key]=data[key];
             });    
-            updateProject(newProject);          
+            updateProject(newProject);       
         }
         else{
           updateProject({});

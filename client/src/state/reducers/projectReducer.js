@@ -1,8 +1,9 @@
-let fields=["_id","name","description","deadline","progress","password","teamPictures"];
+let fields=["_id","name","description","deadline","progress","password"];
 let initialState={
     "manager":{
         "name":"",
-        "profilePicture":""
+        "color":"",
+        "job":""
     },
     "team":[]
 };

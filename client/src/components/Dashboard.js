@@ -13,6 +13,7 @@ import React from 'react';
 export default function Dashboard(){
     const project=useSelector((state)=>state.project);
     const [progress,setProgress]=React.useState(0);
+    const [team,setTeam]=React.useState([]);
 
     async function calcProjectProgress(){
       const body= { "projectId":project["_id"]};
@@ -33,6 +34,20 @@ export default function Dashboard(){
       }
     }
 
+    async function getMembersInfo(){
+        const response = await fetch(`http://localhost:3001/api/users`);
+        if(response.status===200){
+            const data=await response.json();
+            const localTeam=[];
+            data.forEach(user=>{
+                if(project.team.includes(user.firstName+" "+user.lastName)){
+                    localTeam.push(user);
+                }
+            })
+            setTeam(localTeam);
+        }
+    }
+
     function stringAvatar(name) {
       return {
           children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
@@ -40,8 +55,9 @@ export default function Dashboard(){
     }
 
     React.useEffect(()=>{
+        getMembersInfo();
         calcProjectProgress();
-    })
+    },[project])
 
     return(
         <Stack direction="row" justifyContent="space-between">
@@ -68,7 +84,7 @@ export default function Dashboard(){
                         direction="row" 
                         alignItems="center" 
                         spacing={2}>
-                        <Avatar  children={project.manager.name.split(" ")[0][0]+project.manager.name.split(" ")[1][0]} sx={{bgcolor:project.manager.color}}/>
+                        <Avatar {...stringAvatar(project.manager.name)} sx={{bgcolor:project.manager.color}}/>
                         <Stack alignItems="flex-start">
                             <Typography variant="body1" textAlign="center">{project.manager.name}</Typography>
                             <Typography variant="body1" textAlign="center">{project.manager.job}</Typography>
@@ -79,9 +95,9 @@ export default function Dashboard(){
             <Typography variant="h6" sx={{ fontWeight: 'regular' }}>Team members:</Typography>
             <Stack spacing={0.5} direction="row">
             {
-                project.team.map((member,index)=>
-                <Tooltip title={member} placement="bottom" key={index}>
-                    <Avatar  {...stringAvatar(member)}key={index}/>
+                team.map((member,index)=>
+                <Tooltip title={member.firstName+" "+member.lastName} placement="bottom" key={index}>
+                    <Avatar sx={{bgcolor:member.color}} key={index} >{member.firstName[0]}{member.lastName[0]}</Avatar>
                 </Tooltip>
                 )
             }

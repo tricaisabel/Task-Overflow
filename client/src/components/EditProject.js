@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,16 +8,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Stack } from '@mui/material';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import enLocale from 'date-fns/locale/en-US';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import {useSelector} from 'react-redux';
 import MembersAuto from './MembersAuto';
 
 export default function EditProject(props) {
     let user=useSelector((state)=>state.user);
-    const [team, setTeam]=React.useState([]);
-    const [date,setDate]=React.useState("");
-    const [project, setProject] = React.useState({
+    const [team, setTeam]=useState(props.edit.team);
+    const [date,setDate]=useState(props.edit.deadline);
+    const [project, setProject] = useState({
         name:props.edit.name,
         description:props.edit.description,
         password:props.edit.password,
@@ -31,6 +30,8 @@ export default function EditProject(props) {
         }
     });
 
+    const [error,setError]=useState(false);
+
     const handleClose = () => {
         props.setEdit("")
     };
@@ -42,21 +43,12 @@ export default function EditProject(props) {
     }
 
     const handleDate = (newDate) => {
-        let ISODate=newDate.toISOString();
-        ISODate=ISODate.slice(0,ISODate.indexOf("T"))
         setDate(newDate);
-        changeState("deadline",ISODate);
+        changeState("deadline",newDate);
     };
 
-    function convertDate(){
-        let year=props.edit.deadline.slice(0,4);
-        let month=props.edit.deadline.slice(5,7);
-        let day=props.edit.deadline.slice(8,10);
-        setDate(month+"/"+day+"/"+year);
-    }
-
     async function saveProject(){
-        if(project.password===project.password2)
+        if(error===false)
         {
             delete project.password2;
             project["team"]=team;
@@ -70,25 +62,19 @@ export default function EditProject(props) {
             if (response.status === 200) {
                 document.location.reload();
                 props.setCreate(false);
-                alert("saved");
+                props.setEdit("");
             }
             else{
-                alert("not saved");
+                alert("Unfortunately something went wrong. Try again.");
             }
         }
         else{
-            alert("passwords not equal");
+            alert("The 2 project passwords must match.");
         }
     }
 
-    React.useEffect(()=>{
-        convertDate() 
-    },[]);
-    
-
     function handleSubmit(){
         saveProject();
-        props.setEdit("");
     }
 
   return (
@@ -105,19 +91,31 @@ export default function EditProject(props) {
                 defaultValue={props.edit.name}
                 onChange={(e) =>changeState("name",e.target.value)}/>
             <TextField 
-                label="New Password" 
+                label="Project Password" 
                 variant="outlined" 
                 required 
                 type="password"
+                error={error}
+                helperText="Passwords must match"
                 defaultValue={props.edit.password}
-                onChange={(e) =>changeState("password",e.target.value)}/>
+                onChange={(e) =>{
+                            changeState("password",e.target.value);
+                            setError(project.password2!==e.target.value);
+                        }
+                    }/>
             <TextField 
                 label="Repeat Password" 
                 variant="outlined" 
                 required 
                 type="password"
+                error={error}
+                helperText="Passwords must match"
                 defaultValue={props.edit.password}
-                onChange={(e) =>changeState("password2",e.target.value)}/>
+                onChange={(e) =>{
+                            changeState("password2",e.target.value);
+                            setError(project.password!==e.target.value);
+                        }
+                    }/>
             <TextField 
                 label="Enter a suggestive description for your new project" 
                 variant="outlined" 
@@ -126,13 +124,13 @@ export default function EditProject(props) {
                 rows={4}
                 defaultValue={props.edit.description}
                 onChange={(e) =>changeState("description",e.target.value)}/>
-            <LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
-                 <DatePicker
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                 <DateTimePicker
                     label="Project deadline"
-                    mask={'__/__/____'}
                     value={date}
                     onChange={handleDate}
                     renderInput={(params) => <TextField {...params} />}
+                    minDateTime={new Date()}
                     />
             </LocalizationProvider>
             <MembersAuto setValue={setTeam} multiple={true} title="Project Members" team={props.edit.team}/>

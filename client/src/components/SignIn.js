@@ -2,51 +2,64 @@ import TabPanel from '@mui/lab/TabPanel';
 import { TextField, Typography,Button,MenuItem,Select,InputLabel ,FormControl,Stack} from '@mui/material';
 import Security from '@mui/icons-material/Security';
 import { Box } from '@mui/system';
-import { styled } from '@mui/material/styles';
-import * as React from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import { useState } from 'react'; 
+import {useDispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as actionCreators from '../state/actionCreators';
 
 export default function SignIn(){
-    const Input = styled('input')({
-    display: 'none',
-    });
-
-    const user=useSelector((state)=>state.user);
     const dispatch=useDispatch();
     const {updateUserField}=bindActionCreators(actionCreators,dispatch);
 
-    const [role, setRole] = React.useState('');
-    const [error, setError] = React.useState(false);
-    const [password2, setPassword2] = React.useState("");
+    const [role, setRole] = useState("");
+    const [error, setError] = useState(false);
+    const [password2, setPassword2] = useState("");
 
+    const [newUser,setUser]=useState({});
+
+    function generateBody(){
+        const color="#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+        const username=newUser.firstName+newUser.lastName;
+        
+        const body={
+            ...newUser,
+            color:color,
+            username:username
+        };
+
+        return body;
+    }
 
     async function addUser(){
-        if(user.password!==password2)
-            setError(true);
-        else{
-            updateUserField("color",Math.floor(Math.random()*16777215).toString(16));
+        if(error===false){
+            const body=generateBody();
             const response = await fetch(`http://localhost:3001/api/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(body)
             });
+
             if (response.status === 200) {
-                alert("The user has been registered. Now you can sign in.");
+                alert(`Your username is: ${body.username}. \n You can now log in.`);
                 updateUserField("logged",true);
+                Object.keys(body).forEach(key=>{
+                    updateUserField(key,body[key]);
+                });
             }
             else{
                 alert("The was something wrong. Please try again");
             }
         }
+        else{
+            alert("Your passwords must match in order to register.");
+        }
     }
 
-    function handleRole(event){
-        updateUserField("role",event.target.value);
-        setRole(event.target.value);
+    function handleRole(e){
+        setUser({...newUser,"role":e.target.value})
+        setRole(e.target.value);
     }
 
     return(
@@ -56,32 +69,29 @@ export default function SignIn(){
                 <Typography variant="h5"  sx={{ m: 5}} >Create an account</Typography>
             </Stack>
             <Box sx={{ flexWrap: 'wrap', mt:3}}>
-
-                <TextField 
-                    label="Username" 
-                    variant="outlined" 
-                    required 
-                    sx={{m:1}}
-                    onChange={(e)=>updateUserField("username",e.target.value)}/>
                 <TextField 
                     label="First name" 
                     variant="outlined" 
                     required 
                     sx={{m:1}}
-                    onChange={(e)=>updateUserField("firstName",e.target.value)}/>
+                    onChange={(e)=>setUser({...newUser,"firstName":e.target.value})}/>
                 <TextField 
                     label="Last name" 
                     variant="outlined" 
                     required 
                     sx={{m:1}}
-                    onChange={(e)=>updateUserField("lastName",e.target.value)}/>
+                    onChange={(e)=>setUser({...newUser,"lastName":e.target.value})}/>
                 <TextField 
                     label="Password" 
                     variant="outlined" 
                     required 
                     type="password" 
                     sx={{m:1}}
-                    onChange={(e)=>updateUserField("password",e.target.value)}/>
+                    onChange={(e)=>{
+                        setUser({...newUser,"password":e.target.value});
+                        setError(password2!==e.target.value);
+                        }
+                    }/>
                 <TextField 
                     label="Repeat password" 
                     variant="outlined" 
@@ -90,14 +100,19 @@ export default function SignIn(){
                     sx={{m:1}}
                     error={error}
                     helperText="Passwords must match"
-                    onChange={(e)=>setPassword2(e.target.value)}
+                    onChange={(e)=>
+                        {
+                            setPassword2(e.target.value);
+                            setError(newUser.password!==e.target.value);
+                        }
+                    }
                     />
                 <TextField 
                     label="Job title" 
                     variant="outlined" 
                     required 
                     sx={{m:1}}
-                    onChange={(e)=>updateUserField("job",e.target.value)}/>
+                    onChange={(e)=>setUser({...newUser,"job":e.target.value})}/>
 
                 <FormControl sx={{ m: 1, minWidth: 120 }} required>
                     <InputLabel>Role</InputLabel>
