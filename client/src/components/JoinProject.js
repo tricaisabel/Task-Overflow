@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Stack } from '@mui/material';
 import {useState} from 'react';
 import { Typography } from '@mui/material';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 
 export default function JoinProject(props) {
   const [projectId,setProjectId]=useState("");
